@@ -1,0 +1,2912 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Midnight 相談室</title>
+<meta name="description" content="毎週月〜金 深夜25:00から放送。眠れない夜のための相談番組『Midnight 相談室』公式サイト。">
+<meta name="theme-color" content="#14213d">
+<script>
+  // デザイン用ライブラリ（Tailwind）が毎回出す開発者向けの注意書きだけを、開発者ツールに出さないようにする
+  (function () {
+    var warn = console.warn;
+    console.warn = function () {
+      var first = arguments[0];
+      if (typeof first === 'string' && first.indexOf('cdn.tailwindcss.com should not be used in production') !== -1) return;
+      return warn.apply(console, arguments);
+    };
+  })();
+</script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>window.FontAwesomeConfig = { autoReplaceSvg: "nest" };</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Old+Mincho:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1b1d24;
+    --navy-2: #24272f;
+    --gold: #a8925c;
+    --red: #b3263a;
+    --ink: #24262b;
+    --sub: #6f7178;
+    --line: #d6d3ca;
+    --paper: #e7e5df;
+  }
+  /* ===== 不気味さ：フィルムの粒子・周辺減光・ときどき起きる乱れ ===== */
+  .grain { position: fixed; inset: -50%; z-index: 45; pointer-events: none; opacity: .09;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-3%)} 60%{transform:translate(-2%,-1%)} 80%{transform:translate(3%,3%)} 100%{transform:translate(0,0)} }
+  .vignette { position: fixed; inset: 0; z-index: 44; pointer-events: none; background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(10,8,6,.22) 100%); }
+  html.glitch .glitch-target { transform: translateX(3px) skewX(-2deg); filter: grayscale(1) contrast(1.4); }
+  html.glitch .ghost-title { text-shadow: 4px 0 rgba(179,38,58,.8), -4px 0 rgba(120,200,210,.5); }
+  html.glitch .grain { opacity: .22; }
+  .ghost-title { text-shadow: 1px 0 rgba(179,38,58,.35), -1px 0 rgba(120,200,210,.22); }
+  .muted-img { filter: grayscale(.85) contrast(.9) brightness(.92); }
+  .spinner { width: 14px; height: 14px; border: 2px solid #c9c5bb; border-top-color: #6f7178; border-radius: 50%; animation: spin 1.1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .broken-img { background: repeating-linear-gradient(45deg, #ecebe6 0 8px, #e2e0d9 8px 16px); }
+  .hidden-msg { color: var(--navy); }
+  .hidden-msg::selection { background: #b3263a; color: #fff; }
+  html, body { background: var(--paper); color: var(--ink); }
+  body { font-family: 'Noto Sans JP', system-ui, sans-serif; overflow-x: hidden; }
+  .mincho { font-family: 'Zen Old Mincho', serif; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+
+  /* Hero : 誰もいないスタジオ */
+  .hero {
+    position: relative; overflow: hidden;
+    background:
+      radial-gradient(ellipse 40% 55% at 72% 0%, rgba(255,236,200,.16), transparent 70%),
+      linear-gradient(180deg, transparent 72%, rgba(0,0,0,.55) 72.5%, #0c0c0e 100%),
+      linear-gradient(180deg, #17181c 0%, #101114 70%);
+  }
+  .studio-glass { position: absolute; left: 4%; right: 46%; top: 14%; bottom: 32%; border: 6px solid #232429; background: linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 40%), #0a0b0d; box-shadow: inset 0 0 40px #000; }
+  .studio-glass::after { content: ''; position: absolute; left: 62%; top: 38%; width: 26px; height: 58px; border-radius: 13px 13px 4px 4px; background: rgba(255,255,255,.035); filter: blur(3px); animation: figure 14s ease-in-out infinite; }
+  @keyframes figure { 0%,70%,100% { opacity: 0; } 76%,82% { opacity: 1; } }
+  .onair-sign { position: absolute; right: 6%; top: 12%; padding: 6px 14px; border: 2px solid #3a0d14; background: #2a080d; color: #5a1a22; font-weight: 900; letter-spacing: .25em; font-size: 13px; border-radius: 3px; animation: sign 7s infinite; }
+  @keyframes sign {
+    0%, 8%, 11%, 40%, 43%, 100% { background: #b3263a; color: #ffe7ea; box-shadow: 0 0 18px rgba(179,38,58,.9), 0 0 60px rgba(179,38,58,.45); }
+    9%, 10%, 41%, 42% { background: #2a080d; color: #5a1a22; box-shadow: none; }
+  }
+  .studio-mic { position: absolute; right: 12%; bottom: 18%; font-size: 120px; color: #1f2025; filter: drop-shadow(0 0 1px rgba(255,255,255,.08)); transform: rotate(-12deg); }
+  @media (max-width: 640px) { .studio-mic { font-size: 80px; right: 4%; bottom: 10%; } .studio-glass { right: 30%; } }
+
+  .onair-lamp { width: 10px; height: 10px; border-radius: 50%; background: #ff4d6d; box-shadow: 0 0 10px #ff4d6d, 0 0 22px rgba(255,77,109,.6); animation: lamp 1.6s ease-in-out infinite; }
+  @keyframes lamp { 50% { opacity: .35; box-shadow: 0 0 3px #ff4d6d; } }
+  .play-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: var(--navy); flex-shrink: 0; transition: transform .15s; }
+  .play-btn:hover { transform: scale(1.06); }
+  #player-sub { transition: opacity .6s; }
+  .prog-tab { color: #4b5160; border-bottom: 3px solid transparent; }
+  .prog-tab:hover { color: var(--navy); }
+  .prog-tab.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 700; }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .sec-title { display: flex; align-items: center; gap: .6rem; font-weight: 900; color: var(--navy); }
+  .sec-title::before { content: ''; width: 6px; height: 1.2em; background: var(--gold); border-radius: 2px; }
+
+  .letter-card { transition: box-shadow .4s, border-color .4s; }
+  .letter-card.solved { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(242,177,52,.6), 0 10px 30px rgba(242,177,52,.18); }
+  .paper-lines { background: repeating-linear-gradient(to bottom, transparent 0 31px, #ece9e1 31px 32px); }
+  .reveal { animation: reveal .9s ease; }
+  @keyframes reveal { from { opacity: 0; filter: blur(4px); } to { opacity: 1; filter: none; } }
+
+  /* Browser */
+  #browser { transition: opacity .25s; }
+  #browser.closed { opacity: 0; pointer-events: none; }
+  #browser .bwin { transition: transform .3s cubic-bezier(.2,1.1,.4,1); }
+  #browser.closed .bwin { transform: translateY(20px) scale(.98); }
+  .b-btn { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: #5f6368; }
+  .b-btn:hover:not(:disabled) { background: #e8eaed; }
+  .b-btn:disabled { opacity: .35; cursor: default; }
+  .b-label { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #3c4043; background: #fff; border: 1px solid #dadce0; white-space: nowrap; flex-shrink: 0; }
+  .b-label:hover:not(:disabled) { background: #f1f3f4; }
+  .b-label:disabled { opacity: .4; cursor: default; }
+  .b-hint { border-color: #a8925c; color: #5b4a1c; background: #fff8e6; }
+  .b-hint:hover { background: #fdefc8 !important; }
+  .b-label:focus-visible { outline: 2px solid #1a73e8; outline-offset: 2px; }
+
+  .hashtag { color: #1d9bf0; cursor: pointer; }
+  .kw { color: #1a5fb4; font-weight: 700; background: rgba(26,95,180,.08); border-radius: 3px; padding: 0 2px; }
+  .hashtag:hover { text-decoration: underline; }
+  .navlink { color: #1a0dab; cursor: pointer; }
+  .navlink:hover { text-decoration: underline; }
+  .anchor { color: #0000ee; }
+  .bbs { font-family: 'MS PGothic','Noto Sans JP',sans-serif; }
+
+  /* Toast */
+  #toast-root { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 90; width: min(92vw, 440px); display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { pointer-events: auto; animation: tIn .45s cubic-bezier(.2,1.3,.4,1); }
+  .toast.out { animation: tOut .35s ease forwards; }
+  @keyframes tIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
+  @keyframes tOut { to { opacity: 0; transform: translateY(-10px); } }
+
+  /* Modal */
+  #modal { transition: opacity .25s; }
+  #modal.closed { opacity: 0; pointer-events: none; }
+  .field { border: 1px solid #d6d3cb; background: #fff; transition: border-color .2s, box-shadow .2s; }
+  .field:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(20,33,61,.12); }
+
+  .fab { box-shadow: 0 8px 24px rgba(20,33,61,.35); }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<!-- 25:13 まだ、誰か聴いていますか -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div id="toast-root" aria-live="polite"></div>
+
+<!-- ===== Station bar ===== -->
+<div class="bg-white border-b border-[var(--line)] text-xs">
+  <div class="max-w-6xl mx-auto px-4 h-11 flex items-center gap-4">
+    <a class="flex items-center gap-2 font-black text-[var(--navy)] shrink-0" href="#" data-view-link="top">
+      <span class="w-7 h-7 rounded-md bg-[var(--navy)] text-[var(--gold)] grid place-items-center text-[11px]">FM</span>
+      <span class="text-sm">FMみなと <span class="font-medium text-[var(--sub)]">81.3MHz</span></span>
+    </a>
+    <nav class="hidden md:flex gap-5 text-[var(--sub)] ml-4">
+      <span class="cursor-default hover:text-[var(--navy)]">番組表</span>
+      <span class="cursor-default hover:text-[var(--navy)]">番組一覧</span>
+      <span class="cursor-default hover:text-[var(--navy)]">パーソナリティ</span>
+      <span class="cursor-default hover:text-[var(--navy)]">イベント</span>
+      <span class="cursor-default hover:text-[var(--navy)]">プレゼント</span>
+    </nav>
+    <span class="ml-auto hidden sm:inline font-mono text-[var(--sub)]">現在時刻 <span id="site-clock">25:00:00</span></span>
+    <span class="ml-auto sm:ml-0 px-3 py-1 rounded-full bg-[var(--navy)] text-white/50 font-bold shrink-0 cursor-not-allowed" title="現在ご利用いただけません"><i class="fa-solid fa-headphones mr-1"></i>ネットで聴く</span>
+  </div>
+</div>
+
+<!-- ===== Program hero ===== -->
+<header class="hero glitch-target relative overflow-hidden text-white min-h-[300px] sm:min-h-[360px]">
+  <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
+    <div class="studio-glass"></div>
+    <div class="onair-sign">ON AIR</div>
+    <i class="fa-solid fa-microphone-lines studio-mic"></i>
+  </div>
+  <div class="relative max-w-6xl mx-auto px-4 pt-24 pb-10 sm:pt-28 sm:pb-12 flex flex-col sm:flex-row sm:items-end gap-6">
+    <div class="flex-1">
+      <p class="text-xs tracking-[.3em] text-[var(--gold)] font-bold">LATE NIGHT TALK PROGRAM</p>
+      <h1 class="ghost-title mincho mt-2 text-4xl sm:text-6xl font-black leading-tight text-[#e9e6df]">Midnight 相談室</h1>
+      <p class="mt-3 text-sm sm:text-base text-white/60">眠れない夜に届いた、たった一通のお便りのために。</p>
+      <div class="mt-5 flex flex-wrap items-center gap-3 text-sm">
+        <span class="px-3 py-1 rounded bg-white/10 border border-white/20"><i class="fa-regular fa-clock mr-1"></i>毎週 月〜金 25:00-27:00</span>
+        <span class="px-3 py-1 rounded bg-white/10 border border-white/20"><i class="fa-solid fa-microphone mr-1"></i>パーソナリティ：ヨル</span>
+        <span id="onair" class="px-3 py-1 rounded font-bold"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Live player ===== -->
+<section class="bg-[#0a1129] text-white border-t border-white/10">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+    <span class="flex items-center gap-2 shrink-0"><span class="onair-lamp"></span><span class="font-black tracking-[.25em] text-xs text-[#ff4d6d]">ON AIR</span></span>
+    <button id="play-btn" type="button" class="play-btn" aria-label="放送を聴く"><span id="play-icon"><i class="fa-solid fa-play translate-x-[1px]"></i></span></button>
+    <div class="min-w-0 flex-1">
+      <p class="text-sm font-bold truncate">Midnight 相談室 ─ ただいま放送中</p>
+      <p id="player-sub" class="text-[11px] text-white/60 truncate">▶ を押すと、放送を聴くことができます</p>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <canvas id="meter" width="140" height="28" class="w-[110px] sm:w-[140px] h-7" aria-hidden="true"></canvas>
+      <span id="player-time" class="font-mono text-xs text-white/60 w-12 text-right">--:--</span>
+      <i class="fa-solid fa-volume-high text-white/50 text-xs"></i>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Program nav ===== -->
+<nav style="top:env(safe-area-inset-top,0px)" class="sticky z-30 bg-white/95 backdrop-blur border-b border-[var(--line)]">
+  <div class="max-w-6xl mx-auto px-2 flex overflow-x-auto no-scrollbar text-sm">
+    <button class="prog-tab active shrink-0 px-4 py-3.5" data-view-link="top">番組トップ</button>
+    <button class="prog-tab shrink-0 px-4 py-3.5" data-view-link="letters">お便り紹介 <span id="nav-progress" class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-[var(--paper)] text-[var(--sub)]"></span></button>
+    <button class="prog-tab shrink-0 px-4 py-3.5" data-view-link="words">マイ言葉帳 <span id="nav-words" class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-[var(--paper)] text-[var(--sub)]">0</span></button>
+    <button class="prog-tab shrink-0 px-4 py-3.5" data-view-link="about">番組について</button>
+  </div>
+</nav>
+
+<div class="max-w-6xl mx-auto px-4 py-8 grid gap-8 lg:grid-cols-[1fr_300px]">
+  <main>
+    <!-- TOP -->
+    <section id="view-top" class="view active">
+      <div class="rounded-xl bg-white border border-[var(--line)] p-5 sm:p-7">
+        <p class="text-xs font-bold text-[var(--gold)] tracking-widest">TONIGHT'S THEME</p>
+        <h2 class="mincho text-2xl sm:text-3xl font-black text-[var(--navy)] mt-1">今週のテーマ「言えなかったこと」</h2>
+        <p class="mt-3 text-sm leading-7 text-[var(--sub)]">誰にも言えずに飲み込んだ言葉。言い出すタイミングを失ったままの「ごめん」や「ありがとう」。今週は、そんなあなたの胸の奥にしまわれたままの言葉を募集しています。</p>
+      </div>
+
+
+      <h3 class="sec-title text-lg mt-10 mb-4"><span>最新のお便り</span></h3>
+      <div id="top-letters" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"></div>
+
+      <h3 class="sec-title text-lg mt-10 mb-4"><span>放送後記</span></h3>
+      <div class="rounded-xl bg-white border border-[var(--line)] divide-y divide-[var(--line)]">
+        <article class="p-5">
+          <p class="text-xs text-[var(--sub)] font-mono">2026.10.21 25:00 ／ ヨル</p>
+          <h4 class="font-bold text-[#9aa0ad] mt-1">（タイトルなし）</h4>
+          <p class="text-sm leading-7 text-[#4b5160] mt-2">マイクのスイッチを入れた。けれど、自分の声がイヤホンに返ってこない。<br>オンエアのランプは、ちゃんと点いている。<br>今夜は、誰が聴いているんだろう。</p>
+        </article>
+        <article class="p-5">
+          <p class="text-xs text-[var(--sub)]">2026.10.20 ／ ヨル</p>
+          <h4 class="font-bold text-[var(--navy)] mt-1">言葉の向こう側にいる人のこと</h4>
+          <p class="text-sm leading-7 text-[#4b5160] mt-2">お便りに書かれているのは、その人の夜のほんの一部です。書けなかったこと、書かなかったことの方が、ずっと多いのかもしれません。今週届いた七通も、そんな気がしてなりませんでした。</p>
+        </article>
+        <article class="p-5">
+          <p class="text-xs text-[var(--sub)]">2026.10.13 ／ ヨル</p>
+          <h4 class="font-bold text-[var(--navy)] mt-1">返事は、自分にも届く</h4>
+          <p class="text-sm leading-7 text-[#4b5160] mt-2">誰かのために言葉を選んでいるとき、実は自分にもその言葉をかけているんだと思います。「マイ言葉帳」は、そんな言葉をしまっておく場所です。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- LETTERS -->
+    <section id="view-letters" class="view">
+      <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
+        <div>
+          <h2 class="sec-title text-xl"><span>お便り紹介</span></h2>
+          <p class="text-xs text-[var(--sub)] mt-1">10月20日（月）深夜放送で紹介したお便り</p>
+        </div>
+        <div class="w-full sm:w-60">
+          <div class="flex justify-between text-[11px] text-[var(--sub)] mb-1"><span>真相にたどり着いたお便り</span><span id="progress-label"></span></div>
+          <div class="h-2 rounded-full bg-[#e9e6de] overflow-hidden"><div id="progress-bar" class="h-full bg-[var(--gold)] transition-all duration-700" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div id="letters-list" class="grid gap-6"></div>
+    </section>
+
+    <!-- WORDS -->
+    <section id="view-words" class="view">
+      <h2 class="sec-title text-xl"><span>マイ言葉帳</span></h2>
+      <p class="text-xs text-[var(--sub)] mt-1 mb-5">あなたが書いた返事と、自分自身へ贈った言葉。この端末のブラウザにだけ保存されます。</p>
+      <div id="words-list" class="grid gap-5 sm:grid-cols-2"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="view-about" class="view">
+      <h2 class="sec-title text-xl mb-4"><span>番組について</span></h2>
+      <div class="rounded-xl bg-white border border-[var(--line)] p-5 sm:p-7 text-sm leading-7 text-[#4b5160] space-y-4">
+        <p>『Midnight 相談室』は、深夜25時からお届けする相談番組です。学校のこと、仕事のこと、友だちのこと。誰にも言えない悩みを、パーソナリティのヨルが一通ずつ受け止めます。</p>
+        <p>番組では、お便りの言葉だけでなく、その人が過ごしてきた時間ごと想像することを大切にしています。</p>
+        <p class="text-xs text-[var(--sub)]">※本番組は番組表には掲載されておりません。放送内容の録音・アーカイブは行っておりません。お便りの宛先は公開しておりません。</p>
+        <dl class="grid grid-cols-[6rem_1fr] gap-y-2 pt-2 border-t border-[var(--line)]">
+          <dt class="font-bold text-[var(--navy)]">放送時間</dt><dd>毎週 月〜金 25:00-27:00</dd>
+          <dt class="font-bold text-[var(--navy)]">放送局</dt><dd>FMみなと 81.3MHz</dd>
+          <dt class="font-bold text-[var(--navy)]">出演</dt><dd>ヨル</dd>
+        </dl>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="space-y-5">
+    <div class="rounded-xl bg-white border border-[var(--line)] p-5">
+      <div class="flex items-center gap-3">
+        <div class="broken-img w-14 h-14 border border-[#cfccc3] grid place-items-center text-[#a7a49b] text-[9px] leading-tight text-center"><span><i class="fa-regular fa-image text-base block"></i>画像なし</span></div>
+        <div>
+          <p class="text-[11px] text-[var(--sub)]">パーソナリティ</p>
+          <p class="font-black text-lg text-[var(--navy)]">ヨル</p>
+        </div>
+      </div>
+      <p class="mt-3 text-xs leading-6 text-[#4b5160]">夜にしか話せないことがある、と信じているラジオパーソナリティ。好きなものは、ぬるくなったココアと、雨上がりの夜道。</p>
+      <p class="mt-2 text-[11px] leading-5 text-[var(--sub)]">※ご本人の意向により、プロフィール写真・経歴は掲載しておりません。</p>
+    </div>
+    <div class="rounded-xl bg-[var(--navy)] text-white p-5">
+      <p class="text-[11px] tracking-widest text-[var(--gold)] font-bold">INVESTIGATION</p>
+      <p class="mt-1 font-bold">調査の進み具合</p>
+      <div id="side-progress" class="mt-3 space-y-3 text-xs"></div>
+      <button type="button" class="open-browser mt-4 w-full py-2 rounded-full bg-[var(--gold)] text-[var(--navy)] font-bold text-sm"><i class="fa-solid fa-magnifying-glass mr-1"></i>Webで調べる</button>
+    </div>
+    <div class="rounded-xl bg-white border border-[var(--line)] p-5 text-xs">
+      <p class="font-bold text-[var(--navy)] text-sm mb-3"><i class="fa-regular fa-calendar mr-1"></i>今夜の番組表</p>
+      <div class="flex items-center gap-2 text-[var(--sub)]"><span class="spinner"></span><span id="schedule-msg">読み込み中…</span></div>
+    </div>
+    <div>
+      <p class="text-[10px] text-[var(--sub)] mb-1">スポンサーリンク</p>
+      <div class="broken-img h-[200px] border border-[#cfccc3] grid place-items-center text-[11px] text-[#a7a49b]">広告を表示できません</div>
+    </div>
+    <div class="rounded-xl bg-white border border-[var(--line)] p-5 text-xs leading-6 text-[#4b5160]">
+      <p class="font-bold text-[var(--navy)] text-sm mb-1"><i class="fa-regular fa-envelope mr-1"></i>お便り募集中</p>
+      現在、お便りの宛先は公開しておりません。
+    </div>
+  </aside>
+</div>
+
+<footer class="bg-[var(--navy)] text-white/70 text-xs">
+  <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+    <div>
+      <p class="font-bold text-white text-sm">FMみなと 81.3MHz</p>
+      <p class="mt-1">番組へのご意見・ご感想は各番組ページからお寄せください。</p>
+    </div>
+    <div class="sm:text-right">
+      <p class="font-mono text-white/50">あなたは <span class="text-[var(--gold)]">0000025</span> 人目の受信者です</p>
+      <p class="mt-1">© FM MINATO / Midnight 相談室 ── この作品はフィクションです。</p>
+      <button id="reset-btn" type="button" class="mt-1 text-white/30 hover:text-white/60 underline">調査ノートを白紙に戻す</button>
+      <p class="hidden-msg mt-1 select-text">ここから出してください。ずっと、マイクの前にいます。</p>
+    </div>
+  </div>
+</footer>
+
+<button type="button" style="right:calc(1rem + env(safe-area-inset-right,0px));bottom:calc(1rem + env(safe-area-inset-bottom,0px))" class="open-browser fab fixed z-40 px-5 py-3 rounded-full bg-[var(--navy)] text-white font-bold text-sm flex items-center gap-2">
+  <i class="fa-solid fa-magnifying-glass text-[var(--gold)]"></i>Webで調べる
+</button>
+
+<!-- ===== In-app browser ===== -->
+<div id="browser" class="closed fixed inset-0 z-[60] bg-black/50 md:p-6" aria-hidden="true">
+  <div class="bwin relative h-full w-full max-w-6xl mx-auto flex flex-col bg-white md:rounded-xl overflow-hidden shadow-2xl">
+    <div class="bg-[#dee1e6] px-2 pt-2 flex items-end gap-2">
+      <div class="bg-white rounded-t-lg px-3 py-1.5 text-xs flex items-center gap-2 max-w-[70%] min-w-0">
+        <span id="b-tab-icon" class="text-[#5f6368]"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <span id="b-tab-title" class="truncate">Sagasu</span>
+      </div>
+      <button type="button" id="b-close" class="b-label ml-auto mb-1" aria-label="ブラウザを閉じる"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg><span>閉じる</span></button>
+    </div>
+    <div class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#e0e0e0] bg-white">
+      <button type="button" id="b-back" class="b-label" aria-label="前のページに戻る"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg><span>戻る</span></button>
+      <button type="button" id="b-fwd" class="b-label" aria-label="次のページに進む"><span>進む</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+      <button type="button" id="b-home" class="b-label" aria-label="検索のトップへ"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span class="hidden sm:inline">トップ</span></button>
+      <div id="b-address-form" class="flex-1 min-w-0 basis-full sm:basis-0 order-last sm:order-none">
+        <div class="flex items-center gap-2 rounded-full bg-[#f1f3f4] px-3 py-1.5">
+          <i class="fa-solid fa-lock text-[10px] text-[#5f6368]"></i>
+          <input id="b-address" class="flex-1 min-w-0 bg-transparent outline-none text-sm" autocomplete="off" enterkeyhint="go" aria-label="アドレスまたは検索ワード">
+        </div>
+      </div>
+    </div>
+    <div id="b-view" class="flex-1 overflow-y-auto bg-white"></div>
+    <div class="border-t border-[#e0e0e0] bg-[#f8f9fa] px-3 py-1.5 text-[11px] text-[#5f6368] flex items-center gap-2">
+      <i class="fa-solid fa-book-open text-[var(--gold)]"></i>
+      <span id="b-status" class="truncate min-w-0"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Letter modal ===== -->
+<div id="modal" class="closed fixed inset-0 z-[70] bg-black/50 flex items-end sm:items-center justify-center sm:p-6" aria-hidden="true">
+  <div class="w-full sm:max-w-lg max-h-[92vh] overflow-y-auto bg-white rounded-t-2xl sm:rounded-2xl" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="sticky top-0 bg-white border-b border-[var(--line)] px-5 py-3 flex items-center">
+      <h3 id="modal-title" class="font-bold text-[var(--navy)]"><i class="fa-regular fa-envelope mr-2 text-[var(--gold)]"></i>返事を書く</h3>
+      <button type="button" id="modal-close" class="b-label ml-auto" aria-label="閉じる"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg><span>閉じる</span></button>
+    </div>
+    <div id="letter-form" class="p-5 space-y-5">
+      <div id="modal-to" class="text-xs rounded-lg bg-[var(--paper)] px-3 py-2 text-[#4b5160]"></div>
+      <div>
+        <label for="f-name" class="block text-sm font-bold mb-1">ラジオネーム</label>
+        <input id="f-name" maxlength="30" class="field w-full rounded-lg px-3 py-2.5 text-sm" placeholder="例）眠れないペンギン">
+      </div>
+      <div>
+        <label for="f-them" class="block text-sm font-bold mb-1">相談者へ届ける言葉</label>
+        <textarea id="f-them" rows="4" maxlength="500" class="field w-full rounded-lg px-3 py-2.5 text-sm" placeholder="この人の夜が、少しだけ軽くなるように。"></textarea>
+      </div>
+      <div class="rounded-xl border-2 border-[var(--gold)] bg-[#fffaf0] p-4">
+        <label for="f-self" class="block text-sm font-bold mb-0.5">自分自身へ贈る言葉 <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-[var(--gold)] text-[var(--navy)] align-middle">いちばん大切</span></label>
+        <p class="text-xs text-[var(--sub)] mb-2">もし自分が同じ悩みを抱えた時、かけてほしい言葉は？</p>
+        <textarea id="f-self" rows="4" maxlength="500" class="field w-full rounded-lg px-3 py-2.5 text-sm mincho" placeholder="いつかの自分へ。"></textarea>
+      </div>
+      <p id="form-error" class="hidden text-xs text-rose-600"></p>
+      <button type="button" id="letter-submit" class="w-full py-3 rounded-full bg-[var(--navy)] text-white font-bold hover:opacity-90"><i class="fa-solid fa-paper-plane mr-2 text-[var(--gold)]"></i>送信する</button>
+    </div>
+  </div>
+</div>
+
+<noscript><p style="padding:12px;background:#300;color:#fff;text-align:center">このサイトの表示にはJavaScriptが必要です。</p></noscript>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+   *  GAME DATA
+   *  clue key format:  'p:<pageId>'  or  'n:<siteId>:<noticeId>'
+   * ===================================================================== */
+  const argDatabase = {
+    listeners: [
+      /* ===== 1. くじら：友達 ===== */
+      {
+        id: 'kujira',
+        radioName: 'くじら',
+        handle: '@kujira_0325',
+        profile: '大学1年・女性',
+        title: '友達からの連絡に、返信ができません',
+        text: '大学に入ってから、友達からのメッセージに返信できなくなりました。\n嫌いなわけじゃないんです。むしろ大切な人ほど、通知を開くのが怖い。「今度遊ぼうよ」の一言に、どう返したらいいのか考えているうちに、気づけば一週間が経っている。\nそのうち「もう今さら返せない」と思ってしまって。こんな自分、最低ですよね。',
+        clues: [
+          { key: 'p:kujira_kotori', label: 'くじらのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@kujira_0325' },
+          { key: 'p:kujira_lumi', from: 'page:kujira_kotori', label: 'くじらのLumi（写真）アカウント', hint: 'つぶやきのプロフィールに、写真のSNSへのリンクがある。帰省したときの写真が残っているかもしれない。', keyword: 'kujira_0325' },
+          { key: 'n:shiomi_town:typhoon', from: 'page:kujira_lumi', post: 2, label: '8年前の夏、台風で港周辺への外出が禁止されていた', hint: '帰省した日の海の写真を、拡大してよく見てみよう。看板に、生まれた町の名前が写っている。町役場のお知らせを、8年前の夏までさかのぼってみよう。', keyword: '汐見町', required: true },
+          { key: 'p:shiomi_board', from: 'page:kujira_lumi', post: 1, label: '灯台の下で友達を待ち続けた子の話', hint: '「ここに来ると、まだ少し苦しい」と書かれた灯台の写真。町の人たちが、この灯台の思い出を語り合っている場所があるらしい。町の名前と「灯台」で探してみよう。', keyword: '汐見灯台', required: true }
+        ],
+        truth: {
+          title: '灯台の下で、待っていてくれた友達',
+          story: '小学6年の夏の終わり、くじらは港町・汐見で、転校していく親友と「最後の日の夕方、灯台の下で会おう」と約束した。けれど当日は台風が近づき、町から港周辺への外出禁止が出ていた。くじらは家から出られなかった。\n親友は日が暮れるまで、ひとりで灯台の下で待っていた。謝りたくて手紙を書いたけれど、結局出せないまま、連絡は途絶えた。\n町の掲示板には、その子が帰り際に残した言葉が書かれている。「くじらちゃんが来なくても、怒ってないよって伝えてください」。',
+          nature: '人を大切に思う気持ちが強いぶん、「ちゃんとした返事をしなきゃ」と構えてしまう人。誰かを待たせることが、あの夏の夕焼けと同じくらい怖い。返信できないのは冷たいからじゃなく、優しすぎるから。',
+          yoru: '返せなかった言葉は、消えてなんかいない。あの子はもう、あなたを許していたみたいです。'
+        }
+      },
+
+      /* ===== 2. さく：ゼミ ===== */
+      {
+        id: 'saku',
+        radioName: 'さく',
+        handle: '@saku_flower_09',
+        profile: '大学2年・女性',
+        title: 'ゼミ発表で、声が震えてしまいます',
+        text: 'ヨルさん、こんばんは。大学2年のさくです。\n来週、ゼミで発表があります。原稿は何度も読み込んで、ほとんど暗記しています。それなのに、人の前に立つと喉の奥がきゅっと締まって、声が震えて止まらなくなるんです。\n昔はこんなじゃなかった気がします。いつからこうなったのか、自分でもうまく思い出せません。どうしたら、普通に話せるようになりますか。',
+        clues: [
+          { key: 'p:saku_kotori', label: 'さくのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@saku_flower_09' },
+          { key: 'p:saku_lumi', from: 'page:saku_kotori', label: 'さくのLumi（写真）アカウント', hint: 'つぶやきのプロフィールに、別のSNSへのリンクが貼ってある。写真のほうには、昔の彼女が写っているかもしれない。', keyword: 'saku.flower' },
+          { key: 'n:sakura_hs:program', from: 'page:saku_lumi', post: 8, label: '定期演奏会のフルート独奏が中止になっていた', hint: '昔の写真のハッシュタグに、高校の名前がある。学校の公式サイトには、お知らせが残っているはず。', keyword: '桜台高校' },
+          { key: 'n:sakura_hs:score', from: 'page:sakura_hs', label: '吹奏楽部で楽譜が消え、特定の生徒が疑われていた', hint: '学校のお知らせを、もう少し古い日付まで読んでみよう。「保護者の皆様へ」と書かれた文書が気になる。', keyword: '楽譜', required: true },
+          { key: 'p:sakura_board', from: 'page:saku_lumi', post: 6, label: '掲示板に残っていた「楽譜紛失事件」の真相', hint: 'ソロをもらったと書いてある、ステージの写真を拡大してみよう。横断幕に部活の名前がある。学校の公式サイトに書けないことも、匿名の場所でなら語られているかもしれない。', keyword: '吹奏楽部', required: true },
+          { key: 'p:mio_kotori', from: 'page:saku_lumi', post: 6, label: '親友「みお」の鍵アカウント', hint: 'ソロの写真のコメント欄で「ずっと味方だからね」と書いていた子がいた。その子のアカウント名は？', keyword: 'mio_fl' }
+        ],
+        truth: {
+          title: '信じてもらえなかった、あの日の音楽室',
+          story: '高校2年の秋、さくは桜台高校吹奏楽部で、定期演奏会のフルート独奏に選ばれていた。ところが本番直前、指揮者用の楽譜が音楽室から消える。最後に鍵を返したのがさくだったことから、部内で彼女が犯人だと噂され、学校が「根拠のない憶測を慎むように」と通知を出すほどの騒ぎになった。\n独奏は中止。いちばん信じていた親友のみおは、何も言わずに距離を置いた。\nそれから3年後、掲示板に一つの書き込みが残る。「楽譜を隠したのは私。さくは何も悪くなかった」――書いたのは、みおだった。さくはその書き込みを、まだ知らない。',
+          nature: '真面目で、責任感が強い。誰かを疑うより先に「自分が悪かったのかも」と考えてしまう。大勢の前に立つと、あの時の「疑う目」を思い出してしまうから、声が震える。本当はステージが好きな人。',
+          yoru: '震えているのは弱さじゃない。誰も味方がいなかったあの場所で、ひとりで立っていた証拠なんだと思う。'
+        }
+      },
+
+      /* ===== 3. マツ：バイト ===== */
+      {
+        id: 'matsu',
+        radioName: 'マツ',
+        handle: '@matsushita_s',
+        profile: '大学3年・男性',
+        title: 'バイトの後輩をかばったら、僕が怒られました',
+        text: 'カフェでアルバイトをしている大学3年です。\n先日、入ったばかりの後輩がレジ締めで金額を合わせ間違えて、店長に呼ばれていました。泣きそうな顔を見ていられなくて、「教えた自分の確認不足です」と言ってしまいました。結果、怒られたのは僕で、シフトも減らされました。後輩はほっとした顔をしていました。\n後悔はしていない、はずなんです。なのに夜になると、胸のあたりがずっと重いんです。',
+        clues: [
+          { key: 'p:matsu_kotori', label: 'マツのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@matsushita_s' },
+          { key: 'p:matsu_tsunagu', from: 'page:matsu_kotori', label: '本名「松下 翔太」のTsunagu（実名SNS）', hint: 'つぶやきのプロフィールに「実名のほうは〜」と書いてある。本名で使うSNSがあるらしい。', keyword: '松下翔太' },
+          { key: 'n:hanazono_lib:pause', from: 'page:matsu_kotori', label: '花園市立図書館で郷土資料が紛失し、中学生ボランティアが休止に', hint: '「閉館するのか」とつぶやいた投稿に、写真が付いている。カードに書かれた図書館の名前と、押されたスタンプを見てみよう。', keyword: '花園市立図書館', required: true },
+          { key: 'n:hanazono_lib:return', from: 'page:hanazono_lib', label: '4年後に資料が返却され、添えられていた手紙', hint: '図書館のお知らせを、古いものまで全部読んでみよう。消えた資料は、その後どうなったのだろう。', keyword: '古地図', required: true },
+          { key: 'p:kei_tsunagu', from: 'page:matsu_tsunagu', label: '後輩「小林 圭」のTsunagu', hint: '実名SNSの投稿に「ずっと謝れずにいて」とコメントしていた人がいた。その人の名前で探してみよう。', keyword: '小林圭' }
+        ],
+        truth: {
+          title: '黙って罪をかぶった、図書館の冬',
+          story: '中学3年の冬、松下は花園市立図書館でボランティアをしていた。ある日、書庫から郷土資料『花園村古地図』が消える。最後に書庫の鍵を開けたのは松下だった。\n本当は、一緒に活動していた後輩の小林が持ち出したのを見ていた。けれど真っ青な後輩の顔を見て、松下は「知りません」とだけ答えた。疑いは晴れないまま、中学生ボランティアは休止になり、彼は図書館を去った。\n4年後、古地図は匿名で返却される。添えられた手紙には「先輩は何も悪くありません」と書かれていた。',
+          nature: '争いごとが苦手で、「自分が引き受ければ丸く収まる」と考える人。その優しさは本物だけれど、自分の気持ちを後回しにする癖が、中学の冬からずっと続いている。胸の重さは、誰にも受け止めてもらえなかった“損な役回り”の重さ。',
+          yoru: '誰かを守れる人は、自分のことも守っていい。その荷物は、ずっとひとりで持っていなくていいんです。'
+        }
+      },
+
+      /* ===== 4. あめ：恋愛 ===== */
+      {
+        id: 'ame',
+        radioName: 'あめ',
+        handle: '@ame_no_hi_02',
+        profile: '大学2年・女性',
+        title: '彼に「好き」と言えません',
+        text: 'ヨルさん、はじめまして。大学2年のあめです。\n同じサークルの先輩と付き合って、もうすぐ1年になります。優しい人で、毎日のように「好きだよ」って言ってくれます。でも私は、一度も同じ言葉を返せたことがありません。\n好きじゃないわけじゃないんです。なのに、言おうとすると喉が固まってしまう。この前、彼に「俺ばっかりだね」って笑われて、何も言えませんでした。このままだと、きっと振られてしまう気がします。',
+        clues: [
+          { key: 'p:ame_kotori', label: 'あめのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@ame_no_hi_02' },
+          { key: 'p:ame_lumi', from: 'page:ame_kotori', label: 'あめのLumi（写真）アカウント', hint: 'つぶやきのプロフィールに、写真のSNSへのリンクがある。帰省したときの写真に、何か写っていないだろうか。', keyword: 'ame.no.hi' },
+          { key: 'n:yuki_jhs:sns', from: 'page:ame_lumi', post: 2, label: '中学2年のとき、私的な手紙が勝手にクラスで共有されていた', hint: '「母校の前を通った」という写真を拡大してみよう。門の表札に、学校の名前が書いてある。学校のお知らせを、6年前の秋までさかのぼってみよう。', keyword: '柚木中学校', required: true },
+          { key: 'p:yuki_board', from: 'page:ame_kotori', label: '同窓会スレに残された、手紙の相手からの言葉', hint: 'つぶやきに「同窓会の案内が回ってきた」とあった。卒業生たちが集まって話している場所がありそう。', keyword: '同窓会', required: true }
+        ],
+        truth: {
+          title: '笑われた手紙と、届かなかった返事',
+          story: '中学2年の秋、あめは同じクラスのゆうとに、初めてのラブレターを書いた。こっそり机に入れた手紙は、彼が来る前に別の生徒に見つかり、写真に撮られてクラスのグループチャットに流された。教室は笑い声でいっぱいになり、あめはしばらく学校に行けなくなった。\n学校が出したお知らせには、こう書かれている。「この件は、手紙を受け取る予定だった生徒本人が担任に申し出たことで明らかになりました」。\nそして今、同窓会の掲示板に、幹事のゆうとが書き込んでいた。「本当は、すごくうれしかったんです。今度こそ、ちゃんと返事をしたい」。',
+          nature: '本当は誰よりも気持ちを大切にする人。言葉にした想いを笑われた日から、「好き」は人に見せると壊れてしまうものになった。言えないのは、彼を大切に思っていないからではなく、大切だからこそ怖いから。',
+          yoru: '「好き」が言えないのは、それがあなたにとって、本物の言葉だからだと思う。'
+        }
+      },
+
+      /* ===== 5. ゆず：一人暮らし ===== */
+      {
+        id: 'yuzu',
+        radioName: 'ゆず',
+        handle: '@yuzu_room101',
+        profile: '大学1年・女性',
+        title: '一人暮らしの夜、家に電話ができません',
+        text: '春から一人暮らしをしている大学1年です。\n授業もバイトもそれなりに楽しいし、友達もできました。でも夜、部屋の電気を消すと、急に実家の音が恋しくなります。台所の音とか、廊下を歩く足音とか。\n電話すればいいだけなのは、わかっています。でも家を出るとき、おばあちゃんとケンカみたいになってしまって、自分からかけるのが怖いんです。',
+        clues: [
+          { key: 'p:yuzu_kotori', label: 'ゆずのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@yuzu_room101' },
+          { key: 'n:yuzuriha:greeting', from: 'page:yuzu_kotori', label: '実家の旅館の若女将は、母の「柚原 千夏」', hint: '「実家ののれん」の写真を見てみよう。のれんに宿の名前が染め抜かれていて、提灯には温泉地の名前もある。', keyword: '旅館ゆずりは' },
+          { key: 'n:yuzuriha:close', from: 'page:yuzuriha', label: '女将の祖母が引退し、旅館が休館していた', hint: '旅館のお知らせの中に、女将からの言葉が載っているものがある。春ごろの日付を探してみよう。', keyword: '女将', required: true },
+          { key: 'p:chinatsu_tsunagu', from: 'notice:yuzuriha:greeting', label: '母の投稿：毎晩9時、電話の前に座る祖母', hint: '「お母さんのTsunagu、たまに見てる」とつぶやいていた。若女将の名前で探してみよう。', keyword: '柚原千夏', required: true }
+        ],
+        truth: {
+          title: '夜9時の、電話の前で',
+          story: 'ゆずの実家は、湯ノ花温泉で七十年続く旅館「ゆずりは」。女将の祖母は、孫のゆずが宿を継ぐものだと思っていた。けれどゆずは遠くの大学への進学を選び、家を出る日に「あんたはこの家を捨てるんだね」と言われたまま、出てきてしまった。\nその春、祖母は女将を引退し、旅館は休館する。お知らせには祖母の言葉が載っていた。「孫が遠くの大学へ進みました。あの子が好きな道を行けるよう、この宿も一度、ひと休みすることにします」。\n母の実名SNSには、こう書かれている。毎晩9時になると、祖母は電話の前に座っている――孫からの電話を待って。',
+          nature: 'まわりに心配をかけたくなくて、寂しさをひとりで抱えてしまう人。家を出たのは家族が嫌いだったからではなく、自分の道を選びたかったから。電話できないのは、責められるのが怖いというより、祖母を傷つけたと思っているから。',
+          yoru: '9時に、一回だけ鳴らしてみてください。向こうも、同じ時間に待っています。'
+        }
+      },
+
+      /* ===== 6. ソラ：授業・学費 ===== */
+      {
+        id: 'sora',
+        radioName: 'ソラ',
+        handle: '@sora_kumo3',
+        profile: '大学3年・男性',
+        title: '授業についていけず、留年しそうです',
+        text: '大学3年の男です。\n2年の終わりからバイトを増やして、今は週5で深夜のコンビニに入っています。そのせいで朝の授業に出られなくなって、気づいたら必修の単位が足りなくなっていました。このままだと留年です。\n親には言えません。学費のことで、これ以上心配をかけたくないんです。誰に相談したらいいのかも、もうよくわかりません。',
+        clues: [
+          { key: 'p:sora_kotori', label: 'ソラのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@sora_kumo3' },
+          { key: 'n:sorami_works:close', from: 'page:sora_kotori', label: '父の町工場「空見製作所」が事業を終えていた', hint: '母親から送られてきたという写真。シャッターの上の看板と、貼り紙の文字を読んでみよう。会社のお知らせが残っていないだろうか。', keyword: '空見製作所', required: true },
+          { key: 'p:seiichi_tsunagu', from: 'notice:sorami_works:close', label: '父の投稿：手をつけなかった学費の口座', hint: '工場のお知らせの最後に、代表者の名前が書いてあった。その名前で探してみよう。', keyword: '空見誠一', required: true },
+          { key: 'n:minato_univ:support', from: 'page:sora_kotori', label: '大学には、学費と修学の相談窓口があった', hint: 'つぶやきに、通っている大学の名前が出てくる。大学のお知らせに、彼が知らないことが書いてあるかもしれない。', keyword: 'みなと学院大学' }
+        ],
+        truth: {
+          title: '閉じた工場と、手をつけなかった口座',
+          story: 'ソラの実家は、父がひとりで切り盛りしてきた町工場「空見製作所」だった。ソラが大学2年の冬、工場は47年の歴史に幕を下ろす。ソラは「学費は自分で払う」と決め、深夜のアルバイトを増やした。その結果、朝の授業に出られなくなり、必修の単位を落とし始めている。\n一方、父の実名SNSには、誰にも言えずにいた言葉が残っていた。息子が生まれた年から、学費の分だけは別の口座に積み立ててあること。工場を閉めても、それだけには手をつけなかったこと。\n親子は同じ理由で、お互いに何も言えずにいた。',
+          nature: '人に頼るより、自分で背負うことを選ぶ人。家族思いで責任感が強いぶん、「助けて」と言うことを、負けや迷惑だと思っている。単位を落としたのは怠けたからではなく、ひとりで全部抱えたから。',
+          yoru: 'ひとりで背負うのは、強さじゃなくて、優しさの使いすぎなのかもしれません。'
+        }
+      },
+
+      /* ===== 7. ハル：就活 ===== */
+      {
+        id: 'haru',
+        radioName: 'ハル',
+        handle: '@haru_no_kaze4',
+        profile: '大学4年・男性',
+        title: '面接で「あなたの強みは？」に答えられません',
+        text: '大学4年、就活中です。もう10月なのに、内定がひとつもありません。\n一番つらいのは、面接で「あなたの強みは何ですか」と聞かれる瞬間です。用意した答えはあるのに、口に出そうとすると「本当にそうか？」ともう一人の自分が言ってくる。頭が真っ白になって、面接官の顔が見られなくなります。\n自分には、胸を張って言えることなんて何もない気がするんです。',
+        clues: [
+          { key: 'p:haru_kotori', label: 'ハルのKotori（つぶやき）アカウント', hint: 'お便りの最後に、投稿者のアカウントが書いてあった。まずはその名前で探してみよう。', keyword: '@haru_no_kaze4' },
+          { key: 'n:seiran_hs:2022', from: 'page:haru_kotori', label: '高校3年の夏、9回裏の失策でサヨナラ負けしていた', hint: '「引っ越しの箱から出てきた」という写真を見てみよう。帽子の刺繍に、高校の名前がある。ボールに書かれた言葉も覚えておこう。', keyword: '青嵐高校', required: true },
+          { key: 'n:seiran_hs:2023', from: 'page:seiran_hs', label: '翌年、後輩たちはベスト8へ。新キャプテンの言葉', hint: '負けた次の年、後輩たちはどうなったのだろう。お知らせを1年先まで読んでみよう。', keyword: 'ベスト8', required: true },
+          { key: 'p:seiran_board', from: 'notice:seiran_hs:2023', label: '掲示板に残る、あの日ベンチにいた後輩の言葉', hint: '公式のお知らせには載らない、後輩たちの本音が語られている場所がありそう。', keyword: '野球部' }
+        ],
+        truth: {
+          title: '9回裏のエラーと、最後まで出していた声',
+          story: 'ハルは高校3年の夏、青嵐高校野球部のキャプテンだった。県大会3回戦、9回裏ツーアウト。自分のエラーでサヨナラ負けを喫し、試合後は「自分のエラーで負けました」とだけ語った。\nそれ以来、自分の強みを口にしようとすると、あの打球が頭に浮かぶ。\nけれど翌年、後輩たちは県大会でベスト8まで勝ち進む。新キャプテンは学校のお知らせの中で、こう語っていた。「去年のキャプテンが、負けた日にも最後まで全員に声をかけていた。その姿を見て、最後まであきらめないチームになれた」。',
+          nature: '失敗だけを覚えていて、自分がしてきたことを数えられない人。責任感が強く、誰よりもチームのことを考えていた。強みがないのではなく、あの日からずっと、自分の強みを自分で打ち消し続けている。',
+          yoru: 'あなたの強みは、あなたが一番見たくなかった日に、もう誰かが見つけていました。'
+        }
+      }
+    ],
+
+    pages: {
+      /* ---------------- くじら ---------------- */
+      kujira_kotori: {
+        owner: 'kujira', type: 'kotori', url: 'kotori.social/kujira_0325',
+        name: 'くじら🐋', avatarScene: 'sea', user: 'kujira_0325', icon: 'fa-fish', color: 'linear-gradient(120deg,#67e8f9,#1e40af)',
+        bio: '大学1年 ｜ 海のない街で暮らしてます ｜ 通知はオフ', joined: '2025年4月',
+        links: [{ text: 'Lumi: kujira_0325', nav: 'page:kujira_lumi' }],
+        following: 89, followers: 112,
+        posts: [
+          { t: '30分前', text: '未読42件。ごめん、ほんとにごめん。' },
+          { t: '1日前', text: '「また今度ね」って言葉が、世界でいちばん怖い。' },
+          { t: '3日前', text: 'ちゃんとした返事を考えてるうちに時間が経ちすぎて、もう返せなくなる。毎回これ。' },
+          { t: '1週間前', text: '約束って、守れなかったときのほうがずっと重い。' },
+          { t: '2週間前', text: '夕焼けを見ると、なぜか胸がざわざわする。' }
+        ]
+      },
+      kujira_lumi: {
+        owner: 'kujira', type: 'lumi', url: 'lumi.photo/kujira_0325',
+        user: 'kujira_0325', name: 'くじら', icon: 'fa-fish', color: 'linear-gradient(135deg,#a5f3fc,#3b82f6)',
+        avatarScene: 'sea', avatarOpt: { tone: 'cool' },
+        bio: '🐋 海が好き。でも夕方の海は少しだけ苦手', following: 74, followers: 98,
+        highlights: [{ label: '海', scene: 'sea' }, { label: '大学', scene: 'campus' }, { label: 'ごはん', scene: 'ramen' }],
+        posts: [
+          { scene: 'campus', date: '2026年10月2日', caption: '大学の並木道、ちょっと好き。', likes: 30, comments: [] },
+          { scene: 'lighthouse', date: '2026年8月15日', caption: 'ここに来ると、まだ少し苦しい。', likes: 38, comments: [{ u: 'kujira_0325', t: '改修されるらしい。その前に来られてよかった' }] },
+          { scene: 'sea', sceneOpt: { tone: 'cool', sign: '汐見漁港', signEn: 'SHIOMI FISHING PORT' }, date: '2026年8月14日', caption: '帰省。この町の海はいつも静か。', likes: 45, comments: [] },
+          { scene: 'books', date: '2026年6月18日', caption: 'レポート地獄。 #大学生', likes: 22, comments: [] },
+          { scene: 'letter', date: '2026年3月30日', caption: '引っ越しの片づけで、出せなかった手紙が出てきた。宛名の住所、もう読めない。', likes: 27, comments: [] },
+          { scene: 'sky2', date: '2026年1月3日', caption: '空だけは、どこで見ても同じ色。', likes: 33, comments: [] },
+          { scene: 'cake', date: '2025年12月12日', caption: '友達の誕生日。おめでとうは、ちゃんと言えた。', likes: 47, comments: [{ u: 'nana_7', t: 'くじらありがと〜！！' }] },
+          { scene: 'ramen', date: '2025年11月8日', caption: '学食の醤油ラーメン、毎日これでいい。', likes: 19, comments: [] },
+          { scene: 'city', date: '2025年4月6日', caption: '大学生になりました。海のない街。', likes: 51, comments: [] }
+        ]
+      },
+      shiomi_town: {
+        owner: 'kujira', type: 'site', url: 'www.town.shiomi.example.jp',
+        name: '汐見町役場', sub: 'Shiomi Town Official Website', icon: 'fa-anchor', theme: '#0e5a8a', accent: '#e6f2f9',
+        catch: '海と灯台のまち 汐見', nav: ['くらし', '子育て・教育', '防災', '観光', 'お知らせ', '町の紹介'],
+        intro: '汐見町は、白い灯台と小さな漁港のある人口4,800人の町です。',
+        notices: [
+          { id: 'lighthouse', date: '2026.08.01', cat: '観光', title: '汐見灯台 改修工事のお知らせ', body: '町のシンボルである汐見灯台について、老朽化に伴う改修工事を2027年1月より実施します。工事期間中は灯台周辺への立ち入りができません。' },
+          { id: 'festival', date: '2026.07.10', cat: 'イベント', title: '第52回 汐見みなと祭り開催のお知らせ', body: '8月15日に汐見漁港にてみなと祭りを開催します。花火大会は20時からです。' },
+          { id: 'reopen', date: '2018.08.27', cat: '防災', title: '台風第19号に伴う港周辺の立ち入り規制解除について', body: '台風第19号の通過に伴い実施しておりました漁港および汐見灯台周辺の立ち入り規制を、本日正午をもって解除しました。' },
+          { id: 'typhoon', date: '2018.08.24', cat: '防災・重要', title: '【重要】台風第19号接近に伴う外出自粛のお願い', body: '大型で強い台風第19号の接近に伴い、8月25日（土）は終日、強い風と高波が予想されます。\n\n・漁港および⟦汐見灯台⟧周辺への立ち入りを禁止します。\n・小中学生のお子さまの外出は控えてください。\n・不要不急の外出はお控えください。\n\n町民の皆様のご理解とご協力をお願いいたします。' }
+        ]
+      },
+      shiomi_board: {
+        owner: 'kujira', type: 'board', url: 'bbs.chiiki-net.example/local/shiomi/0412',
+        boardName: '地域ネット掲示板 ＞ 地域 ＞ 汐見町',
+        threadTitle: '【港町】汐見の思い出を語ろう【白い灯台】',
+        replies: [
+          { no: 1, name: '名無しの港町民', date: '2026/08/11(火) 19:20', id: 'sh1OM', text: '灯台が来年改修されるらしいので、今のうちに思い出を語ろう' },
+          { no: 4, name: '名無しの港町民', date: '2026/08/11(火) 21:02', id: 'kT0dI', text: '灯台の下って昔から「約束の場所」だったよな。告白とか、お別れとか' },
+          { no: 7, name: '名無しの港町民', date: '2026/08/12(水) 00:15', id: 'yU7aR', mark: 'key', text: '8年前の夏、台風の前の日に、灯台の下で夜までひとりで座ってた小学生の女の子いなかった？\n心配になって声かけたら「友達を待ってる。最後の日だから絶対来るって約束したの」って' },
+          { no: 8, name: '名無しの港町民', date: '2026/08/12(水) 00:22', id: 'kT0dI', text: '>>7\n覚えてる。次の日に引っ越す子だったはず。友達は結局来なかったんだよな' },
+          { no: 9, name: '名無しの港町民', date: '2026/08/12(水) 00:31', id: 'pQ5wE', text: '>>8\n来なかったっていうか、来られなかったんだと思うよ。あの日、町から外出するなって放送が何回も流れてたし' },
+          { no: 11, name: '名無しの港町民', date: '2026/08/12(水) 01:04', id: 'yU7aR', mark: 'confess', text: '>>9\nその子、迎えに来たお母さんと帰るとき、俺に言ったんだ。\n「もし“くじらちゃん”って子に会ったら、来なくても怒ってないよって伝えてください」って。\nなんかずっと忘れられない。届いてるといいな' },
+          { no: 12, name: '名無しの港町民', date: '2026/08/12(水) 01:10', id: 'sh1OM', text: '>>11\n泣いた' }
+        ]
+      },
+
+      /* ---------------- さく ---------------- */
+      saku_kotori: {
+        owner: 'saku', type: 'kotori', url: 'kotori.social/saku_flower_09',
+        name: 'さく🌸', avatarScene: 'sakura', user: 'saku_flower_09', icon: 'fa-seedling', color: 'linear-gradient(120deg,#f9a8d4,#c4b5fd)',
+        bio: '大学2年 ｜ 心理学ゼミ ｜ 春と甘いものが好き', joined: '2023年11月',
+        links: [{ text: 'Lumi: saku.flower', nav: 'page:saku_lumi' }],
+        following: 128, followers: 203,
+        posts: [
+          { t: '2時間前', text: '来週のゼミ発表、考えるだけで手が冷たくなる。原稿は完璧なのにな。' },
+          { t: '1日前', text: '人前に立つと、全員にじっと疑われてるような気がする瞬間がある。なんでだろう。' },
+          { t: '3日前', text: '高校のころは、ステージに立つのが一番好きだったはずなのに。' },
+          { t: '1週間前', text: '地元の駅を通った。ホームから見える #桜台高校 の校舎、まだまっすぐ見られない。' },
+          { t: '2週間前', text: '「信じてるよ」って言葉、ちょっと苦手。' },
+          { t: '1ヶ月前', text: '押入れの奥から銀色のケースが出てきた。開けられなかった。' }
+        ]
+      },
+      saku_lumi: {
+        owner: 'saku', type: 'lumi', url: 'lumi.photo/saku.flower',
+        user: 'saku.flower', name: 'さく', icon: 'fa-seedling', color: 'linear-gradient(135deg,#fbcfe8,#a78bfa)',
+        avatarScene: 'sakura',
+        bio: '🌸 / 写真はゆるく / 大学2年', following: 96, followers: 154,
+        highlights: [{ label: '日常', scene: 'coffee' }, { label: 'カフェ', scene: 'cake' }, { label: 'ゼミ', scene: 'books' }],
+        posts: [
+          { scene: 'coffee', date: '2026年10月5日', caption: 'ゼミの資料作り☕ がんばるしかない #大学生', likes: 32, comments: [] },
+          { scene: 'ramen', date: '2026年9月14日', caption: 'ゼミ終わりのラーメン🍜 発表のこと考えると味がしない #大学生', likes: 27, comments: [{ u: 'yuka_0612', t: 'さく大丈夫だよ〜！' }] },
+          { scene: 'sky2', date: '2026年7月30日', caption: '前期おわった〜 空が高い', likes: 35, comments: [] },
+          { scene: 'cake', date: '2026年5月20日', caption: 'がんばったご褒美。 #カフェ巡り', likes: 44, comments: [] },
+          { scene: 'sakura', date: '2026年4月8日', caption: '春。大学2年になりました #桜', likes: 41, comments: [] },
+          { scene: 'black', date: '2023年11月3日', caption: '.', likes: 3, comments: [], note: 'コメントはオフになっています', sceneOpt: { tone: 'none', grain: 10 } },
+          { scene: 'stage', sceneOpt: { banner: ['桜台高校吹奏楽部', '第38回 定期演奏会'] }, date: '2023年10月20日', caption: 'ホールでリハ。本番まであと2週間！今年はソロをもらいました。緊張するけど、いちばん好きな曲。#フルート', likes: 88, comments: [{ u: 'mio_fl', t: 'さくのソロ絶対いい！ずっと味方だからね🫶' }, { u: 'saku.flower', t: '⟦@mio_fl⟧ ありがとう〜！みおがいれば大丈夫' }] },
+          { scene: 'sunset2', date: '2023年8月12日', caption: '合宿最終日。みおと夕日 #合宿', likes: 64, comments: [{ u: 'mio_fl', t: '一生の親友！' }] },
+          { scene: 'school', sceneOpt: { sign: '入学式' }, date: '2022年4月7日', caption: '入学式！ #桜台高校', likes: 52, comments: [] }
+        ]
+      },
+      mio_kotori: {
+        owner: 'saku', type: 'kotori', url: 'kotori.social/mio_fl',
+        name: 'みお', user: 'mio_fl', icon: 'fa-feather', color: 'linear-gradient(120deg,#9ca3af,#4b5563)',
+        bio: '「ごめんね」が言えないまま大人になった', joined: '2021年4月', locked: true,
+        following: 12, followers: 9, posts: []
+      },
+      sakura_hs: {
+        owner: 'saku', type: 'site', url: 'www.sakuradai-hs.example.jp',
+        name: '県立桜台高等学校', sub: 'Sakuradai Senior High School', icon: 'fa-school', theme: '#1d4e89', accent: '#e8f0fa',
+        catch: '自律・協働・挑戦', nav: ['学校案内', '入試情報', '学校生活', '部活動', 'お知らせ', 'アクセス'],
+        intro: '本校は創立62年を迎える普通科の高等学校です。生徒一人ひとりが自ら考え、仲間と協力しながら挑戦できる学校を目指しています。',
+        notices: [
+          { id: 'briefing', date: '2026.10.01', cat: '入試', title: '令和8年度 第3回学校説明会のご案内', body: '11月15日（土）に第3回学校説明会を実施します。授業見学・部活動見学も可能です。参加をご希望の方は、本校ウェブサイトの申込フォームよりお申し込みください。' },
+          { id: 'contest2026', date: '2026.08.10', cat: '部活動', title: '吹奏楽部 県吹奏楽コンクール 銀賞受賞', body: '8月9日に行われた県吹奏楽コンクール高等学校A部門において、本校吹奏楽部が銀賞を受賞しました。応援ありがとうございました。' },
+          { id: 'program', date: '2023.10.30', cat: '部活動', title: '吹奏楽部 第38回定期演奏会 プログラム変更のお知らせ', body: '11月3日（金・祝）開催の吹奏楽部第38回定期演奏会につきまして、部内事情により、第2部で予定しておりました2年生によるフルート独奏を中止し、合奏曲に変更いたします。\n楽しみにしてくださっていた皆様には、心よりお詫び申し上げます。' },
+          { id: 'score', date: '2023.10.25', cat: '保護者の皆様へ', title: '部活動における備品管理と生徒への配慮について', body: '保護者の皆様\n\n先日、⟦吹奏楽部⟧において、定期演奏会で使用予定の楽譜（指揮者用スコア）が音楽室から所在不明となる事案が発生しました。現在、顧問を中心に事実関係を確認しております。\n\nなお、現時点で特定の生徒が関わったという事実は確認されておりません。生徒間において、根拠のない憶測による特定の生徒への言動が見られるとの報告を受けております。ご家庭におかれましても、お子様へのお声がけをお願いいたします。\n\n県立桜台高等学校 校長' },
+          { id: 'fes', date: '2023.09.05', cat: '行事', title: '第45回 桜台祭（文化祭）一般公開のお知らせ', body: '9月16日・17日に第45回桜台祭を開催します。吹奏楽部・軽音楽部によるステージ発表も予定しております。' }
+        ]
+      },
+      sakura_board: {
+        owner: 'saku', type: 'board', url: 'bbs.chiiki-net.example/school/sakuradai/1693',
+        boardName: '地域ネット掲示板 ＞ 学校 ＞ 桜台高校',
+        threadTitle: '【桜台】吹奏楽部について語るスレ Part.9',
+        replies: [
+          { no: 1, name: '名無しさん', date: '2026/09/02(水) 22:14', id: 'aR3kQ', text: '桜台吹部について語りましょう。個人攻撃は禁止。' },
+          { no: 6, name: '名無しさん', date: '2026/09/03(木) 00:41', id: 'Lm9xT', text: '今年も銀賞か。3年前の代が一番うまかったって先輩みんな言ってる' },
+          { no: 12, name: '名無しさん', date: '2026/09/04(金) 23:02', id: 'Qw2zP', text: '3年前っていうと、定演前の楽譜なくなった事件の年じゃない？' },
+          { no: 13, name: '名無しさん', date: '2026/09/04(金) 23:10', id: 'Xc7vN', text: '>>12\nあったな。最後に音楽室の鍵返したのが2年フルートのSで、みんなSがやったって決めつけてた' },
+          { no: 14, name: '名無しさん', date: '2026/09/04(金) 23:18', id: 'Hy4bE', text: '>>13\nSずっと「やってない」って言ってたよね。でも誰も聞かなかった\n結局ソロも中止になって、定演も来なかった' },
+          { no: 15, name: '名無しさん', date: '2026/09/04(金) 23:25', id: 'Tf8gU', text: 'Sの親友のMは何て言ってたの？ いつも二人一緒だったじゃん' },
+          { no: 16, name: '名無しさん', date: '2026/09/04(金) 23:31', id: 'Hy4bE', text: '>>15\nMは何も言わなかった。むしろSを避けてた気がする' },
+          { no: 21, name: '名無しさん（元フルート）', date: '2026/10/01(木) 03:47', id: 'mIo4F', mark: 'confess', text: 'ここに書いても本人には届かないってわかってる。\nあの時、楽譜を隠したのは私です。ソロに選ばれたさくが羨ましくて、本番で少し困ればいいって、それだけでした。すぐ戻すつもりだったのに、騒ぎが大きくなって、怖くて言えなくなった。\n「ずっと味方だよ」って言ったのは私なのに、一番さくを信じなかったのも私です。\nさくは何も悪くなかった。ごめんなさい。' },
+          { no: 22, name: '名無しさん', date: '2026/10/01(木) 07:12', id: 'Lm9xT', text: '>>21\nえ、Mってこと……？' },
+          { no: 23, name: '名無しさん', date: '2026/10/01(木) 08:30', id: 'Qw2zP', text: '>>21\n今さら遅いよ。でも、本人に届くといいな' }
+        ]
+      },
+
+      /* ---------------- マツ ---------------- */
+      matsu_kotori: {
+        owner: 'matsu', type: 'kotori', url: 'kotori.social/matsushita_s',
+        name: 'マツ', user: 'matsushita_s', icon: 'fa-mug-saucer', color: 'linear-gradient(120deg,#93c5fd,#1e3a8a)',
+        bio: '大学3年 ｜ カフェバイト ｜ 本と珈琲 ｜ 実名のほうはTsunaguで', joined: '2022年4月',
+        links: [{ text: 'Tsunagu: 松下 翔太', nav: 'page:matsu_tsunagu' }],
+        following: 64, followers: 71,
+        posts: [
+          { t: '4時間前', text: 'シフト、減らされた。後輩は悪くない。……たぶん。' },
+          { t: '2日前', text: '誰かが責められてるのを見ると、昔から体が勝手に動く。' },
+          { t: '5日前', text: '古い紙の匂いがすると、どうしても中学の冬を思い出す。' },
+          { t: '1週間前', text: 'あの図書館、来年の3月で閉館するのか。財布の奥から、まだこれが出てくる。', scene: 'libcard' },
+          { t: '2週間前', text: '黙っていることが優しさだった時代があった。今もそうなのかは、わからない。' }
+        ]
+      },
+      matsu_tsunagu: {
+        owner: 'matsu', type: 'tsunagu', url: 'tsunagu.example/shota.matsushita',
+        name: '松下 翔太', icon: 'fa-user',
+        info: [
+          { icon: 'fa-graduation-cap', text: '花園大学 経済学部 3年' },
+          { icon: 'fa-briefcase', text: 'カフェ・ソレイユ 花園駅前店（アルバイト）' },
+          { icon: 'fa-school', text: '⟦花園市立第二中学校⟧ 卒業' }
+        ],
+        friends: 87,
+        posts: [
+          { date: '9月20日', text: '⟦花園市立図書館⟧が、来年3月で閉館するそうです。\n中学のころ、ここでボランティアをしていました。いろいろあって途中で辞めてしまったけど、今でも一番好きな場所です。閉館までに一度行こうと思います。', likes: 24,
+            comments: [
+              { name: '小林 圭', text: '先輩、お久しぶりです。あの時のこと、ずっと謝れずにいてすみません。' },
+              { name: '松下 翔太', text: '小林くん、久しぶり。なんのことかな。元気そうでよかった。' }
+            ] },
+          { date: '8月3日', text: 'バイトの後輩が、初めてラテアートを成功させた。自分のことのように嬉しい。', likes: 31, comments: [] }
+        ]
+      },
+      kei_tsunagu: {
+        owner: 'matsu', type: 'tsunagu', url: 'tsunagu.example/kei.kobayashi',
+        name: '小林 圭', icon: 'fa-user',
+        info: [
+          { icon: 'fa-graduation-cap', text: '花園大学 文学部 2年（学芸員課程）' },
+          { icon: 'fa-school', text: '⟦花園市立第二中学校⟧ 卒業' }
+        ],
+        friends: 142,
+        posts: [
+          { date: '9月21日', text: '中学生のころ、自分の代わりに黙って責任をかぶってくれた先輩がいます。\n大学生になったら、ちゃんと謝りに行けると思っていたのに、まだ言えていません。学芸員を目指しているのも、たぶんあの冬があったからです。', likes: 18, comments: [] }
+        ]
+      },
+      hanazono_lib: {
+        owner: 'matsu', type: 'site', url: 'www.lib.hanazono.example.jp',
+        name: '花園市立図書館', sub: 'Hanazono City Library', icon: 'fa-book', theme: '#2f6b3f', accent: '#eaf4ec',
+        catch: 'まちの本棚、みんなの居場所', nav: ['利用案内', '蔵書検索', 'イベント', 'お知らせ', '郷土資料', 'アクセス'],
+        intro: '花園市立図書館は1978年に開館しました。約18万冊の蔵書と、花園の歴史を伝える郷土資料を所蔵しています。',
+        notices: [
+          { id: 'event', date: '2026.10.05', cat: 'イベント', title: '閉館前 最後の「冬のおはなし会」', body: '12月20日（土）に、閉館前最後のおはなし会を開催します。どなたでもご参加いただけます。' },
+          { id: 'close', date: '2026.09.15', cat: '重要', title: '花園市立図書館 閉館のお知らせ（2027年3月31日）', body: '花園市立図書館は、施設の老朽化に伴い、2027年3月31日をもって閉館いたします。新図書館は花園駅前複合施設内に開館予定です。49年間のご利用、誠にありがとうございました。' },
+          { id: 'return', date: '2023.12.20', cat: 'お知らせ', title: '郷土資料『花園村古地図』の返却について', body: '2019年12月に当館書庫で所在不明となっておりました郷土資料『花園村古地図』（江戸後期）が、このたび匿名の郵便により当館へ返却されました。資料に損傷はありません。\n\n同封されていたお手紙には、「持ち出したのは自分です。当時ボランティアをしていた先輩は何も悪くありません。先輩は自分をかばって何も言わなかっただけです」と記されていました。\n\n当館として、当時の調査の過程で、一人の中学生ボランティアの方に大きなご負担をおかけしたことを深くお詫び申し上げます。' },
+          { id: 'pause', date: '2019.12.26', cat: 'お知らせ', title: '中学生ボランティア活動の休止について', body: '12月20日、当館書庫に保管していた郷土資料1点が所在不明となりました。最後に書庫を利用したのは中学生ボランティアであったことから、聞き取りを行いましたが、所在は判明しておりません。\n\nこれを受け、書庫の鍵の管理体制を見直すため、中学生ボランティア活動を当面の間、休止いたします。ご協力いただいていた皆様には申し訳ございません。' }
+        ]
+      },
+
+      /* ---------------- あめ ---------------- */
+      ame_kotori: {
+        owner: 'ame', type: 'kotori', url: 'kotori.social/ame_no_hi_02',
+        name: 'あめ☂', avatarScene: 'rain', user: 'ame_no_hi_02', icon: 'fa-umbrella', color: 'linear-gradient(120deg,#a5b4fc,#64748b)',
+        bio: '大学2年 ｜ 写真サークル ｜ 言葉にするのが、すごく下手です', joined: '2025年5月',
+        links: [{ text: 'Lumi: ame.no.hi', nav: 'page:ame_lumi' }],
+        following: 77, followers: 85,
+        posts: [
+          { t: '1時間前', text: '「好き」って二文字が、世界でいちばん重い。' },
+          { t: '1日前', text: '「俺ばっかりだね」って笑ってたけど、目は笑ってなかった。' },
+          { t: '4日前', text: '手紙って、渡したあとがいちばん怖い。' },
+          { t: '1週間前', text: '中学のクラスのグループ、まだ抜けられてない。通知は切ってる。' },
+          { t: '2週間前', text: '⟦同窓会⟧の案内が回ってきた。行けるわけない。' }
+        ]
+      },
+      ame_lumi: {
+        owner: 'ame', type: 'lumi', url: 'lumi.photo/ame.no.hi',
+        user: 'ame.no.hi', name: 'あめ', icon: 'fa-umbrella', color: 'linear-gradient(135deg,#c7d2fe,#94a3b8)',
+        avatarScene: 'rain',
+        bio: '☂ 雨の日の写真ばかり / 写真サークル', following: 58, followers: 66,
+        highlights: [{ label: '写真', scene: 'autumn' }, { label: '雨', scene: 'rain' }, { label: '部室', scene: 'cat' }],
+        posts: [
+          { scene: 'autumn', date: '2026年10月12日', caption: 'サークルの撮影会。先輩が撮ってくれた写真、ちょっと照れる #写真サークル', likes: 34, comments: [{ u: 'kaito_photo', t: 'いい顔してる。好きだよ' }, { u: 'ame.no.hi', t: '…ありがとう' }] },
+          { scene: 'sea', date: '2026年8月25日', caption: '先輩と海。言えなかったけど、楽しかった。', likes: 52, comments: [{ u: 'kaito_photo', t: 'また行こうね' }] },
+          { scene: 'school', sceneOpt: { tree: 'stump', tone: 'fade', gate: '柚木市立柚木中学校' }, date: '2026年5月3日', caption: '帰省。母校の前を通ったら、桜の木が切られてた。', likes: 22, comments: [] },
+          { scene: 'rain', date: '2026年4月20日', caption: '雨の日のほうが、ちゃんと息ができる気がする。', likes: 29, comments: [] },
+          { scene: 'cake', date: '2026年2月14日', caption: 'チョコじゃなくてケーキにした。「好き」の代わりに。', likes: 39, comments: [] },
+          { scene: 'city', sceneOpt: { night: true }, date: '2025年12月24日', caption: 'はじめてのクリスマス。イルミネーション、きれいだった。', likes: 61, comments: [{ u: 'kaito_photo', t: '来年も行こう' }] },
+          { scene: 'books', date: '2025年10月3日', caption: '写真集を買った。言葉より、写真のほうが正直だと思う。', likes: 21, comments: [] },
+          { scene: 'cat', date: '2025年6月11日', caption: 'サークルの部室に住みついてる猫。名前はまだない。', likes: 58, comments: [] },
+          { scene: 'campus', date: '2025年4月5日', caption: '大学生になりました。知ってる人がいない街。', likes: 40, comments: [] }
+        ]
+      },
+      yuki_jhs: {
+        owner: 'ame', type: 'site', url: 'www.yuki-jhs.example.jp',
+        name: '柚木市立柚木中学校', sub: 'Yuki Junior High School', icon: 'fa-school', theme: '#6b4f2a', accent: '#f5efe4',
+        catch: 'おもいやり・やりぬく力', nav: ['学校紹介', '学校だより', '行事', '保護者の皆様へ', 'お知らせ', 'アクセス'],
+        intro: '柚木中学校は、昭和35年に開校した、全校生徒420名の中学校です。',
+        notices: [
+          { id: 'fes', date: '2026.10.01', cat: '行事', title: '令和8年度 柚木中学校 文化祭のご案内', body: '10月25日（日）に文化祭を開催します。保護者・地域の皆様のご来場をお待ちしております。' },
+          { id: 'reunion', date: '2026.06.10', cat: 'お知らせ', title: '卒業生による校舎見学（同窓会）について', body: '2021年3月卒業生より、11月に予定されている⟦同窓会⟧にあわせて校舎を見学したいとのご相談がありました。当日は職員が立ち会います。' },
+          { id: 'sns', date: '2020.11.18', cat: '保護者の皆様へ', title: '生徒間のSNS利用に関するお願い', body: '保護者の皆様\n\n先日、本校2年生の間で、生徒の私的な手紙を撮影した画像が、本人の同意なくクラスのグループチャットで共有される事案がありました。画像を共有した生徒への指導を行うとともに、学級で話し合いの時間を設けました。\n\nなお、この件は、手紙を受け取る予定だった生徒本人が、放課後に担任へ申し出たことで明らかになりました。\n\n人の気持ちが込められた言葉を、笑いの種にしてはいけません。ご家庭でも、スマートフォンの使い方についてお話しいただければ幸いです。\n\n柚木市立柚木中学校 校長' },
+          { id: 'term', date: '2020.09.01', cat: '学校だより', title: '2学期始業式を行いました', body: '本日、2学期の始業式を行いました。生徒の皆さんは、元気な顔で登校してくれました。' }
+        ]
+      },
+      yuki_board: {
+        owner: 'ame', type: 'board', url: 'bbs.chiiki-net.example/school/yuki/2021',
+        boardName: '地域ネット掲示板 ＞ 学校 ＞ 柚木中学校',
+        threadTitle: '【柚木中】2021年卒 3年2組 同窓会スレ',
+        replies: [
+          { no: 1, name: '幹事（ゆうと）', date: '2026/06/02(火) 21:10', id: 'Yu7To', text: '11月に3年2組の同窓会やります！ 学校にも見学の相談済みです。参加できる人はここに書いてください' },
+          { no: 4, name: '名無しさん', date: '2026/06/02(火) 22:41', id: 'kR8mN', text: '行く！ 懐かしいな' },
+          { no: 7, name: '名無しさん', date: '2026/06/03(水) 00:12', id: 'pL2sQ', text: '中2のときの、あの手紙の件、覚えてる？ 今思うとひどかったよな' },
+          { no: 8, name: '名無しさん', date: '2026/06/03(水) 00:20', id: 'kR8mN', text: '>>7\n撮って回したやつ最低だった。あの子、そのあとしばらく学校来なかったよね' },
+          { no: 9, name: '名無しさん', date: '2026/06/03(水) 00:33', id: 'tW5vB', text: '>>8\n俺も笑ってた側だった。今さらだけど、ちゃんと謝りたい' },
+          { no: 12, name: '幹事（ゆうと）', date: '2026/06/03(水) 01:58', id: 'Yu7To', mark: 'confess', text: 'ずっと言えなかったこと、ここに書かせてください。\nあの手紙は、俺の机に入っていたものです。俺が来る前に誰かが見つけて、写真を撮った。俺は怖くて、教室では何も言えなかった。先生に言いに行けたのは、放課後になってからでした。\n本当は、すごくうれしかったんです。でも返事を書く前に、あの子は俺と目を合わせてくれなくなった。\nもし同窓会に来てくれたら、今度こそ、ちゃんと返事をしたい。' },
+          { no: 13, name: '名無しさん', date: '2026/06/03(水) 07:30', id: 'kR8mN', text: '>>12\nゆうと……' },
+          { no: 14, name: '名無しさん', date: '2026/06/03(水) 08:02', id: 'pL2sQ', text: 'あの子、来てくれるといいな' }
+        ]
+      },
+
+      /* ---------------- ゆず ---------------- */
+      yuzu_kotori: {
+        owner: 'yuzu', type: 'kotori', url: 'kotori.social/yuzu_room101',
+        name: 'ゆず🍋', user: 'yuzu_room101', icon: 'fa-lemon', color: 'linear-gradient(120deg,#fde68a,#f59e0b)',
+        bio: '大学1年 ｜ 101号室で一人暮らし ｜ 自炊がんばり中', joined: '2026年4月',
+        following: 102, followers: 88,
+        posts: [
+          { t: '3時間前', text: '夜9時になると、なんか落ち着かない。実家だと、ちょうどお風呂の時間だった。' },
+          { t: '1日前', text: '廊下の足音が恋しいって、変かな。' },
+          { t: '3日前', text: '「あんたはこの家を捨てるんだね」って言われたの、まだ耳に残ってる。' },
+          { t: '5日前', text: '家を出る日に撮った、実家ののれん。お知らせのページ、ずっと開けてない。', scene: 'noren' },
+          { t: '1週間前', text: 'お母さんのTsunagu、たまに見てる。いいねは押さない。' },
+          { t: '2週間前', text: '湯ノ花の駅のにおいが、急に思い出せなくなった。' }
+        ]
+      },
+      yuzuriha: {
+        owner: 'yuzu', type: 'site', url: 'www.yuzuriha-ryokan.example.jp',
+        name: '湯ノ花温泉 旅館ゆずりは', sub: 'Yunohana Onsen Yuzuriha', icon: 'fa-hot-tub-person', theme: '#7a3b2e', accent: '#f7ece8',
+        catch: '湯けむりの里で、七十年', nav: ['お部屋', 'お料理', '温泉', 'ご予約', 'お知らせ', 'アクセス'],
+        intro: '湯ノ花温泉の山あいにたたずむ、客室九部屋の小さな宿です。',
+        notices: [
+          { id: 'thanks', date: '2026.09.01', cat: 'お知らせ', title: '休館中のお問い合わせについて', body: '現在、当館は休館しております。ご予約・お問い合わせへのお返事にお時間をいただく場合がございます。何卒ご了承ください。' },
+          { id: 'close', date: '2026.04.10', cat: '重要', title: '女将引退ならびに休館のお知らせ', body: '平素より旅館ゆずりはをご愛顧いただき、誠にありがとうございます。\n\n当館女将・柚原 富美子は、本年3月をもちまして女将を引退いたしました。これに伴い、当館はしばらくの間、休館させていただきます。再開の時期につきましては、若女将・⟦柚原 千夏⟧とともに検討してまいります。\n\n女将より\n「長いあいだ、本当にありがとうございました。この春、孫が遠くの大学へ進みました。あの子が好きな道を、迷わず歩いていけるように、この宿も一度、ひと休みすることにします。」' },
+          { id: 'greeting', date: '2026.02.14', cat: 'ご挨拶', title: '若女将よりご挨拶', body: 'いつも旅館ゆずりはをご利用いただき、ありがとうございます。若女将の⟦柚原 千夏⟧です。\n冬のあいだも、たくさんのお客様にお越しいただきました。春からは、少しずつ宿のかたちを変えていくことになりそうです。決まりましたら、こちらでお知らせいたします。' },
+          { id: 'winter', date: '2025.12.01', cat: 'ご案内', title: '冬季営業のご案内', body: '12月〜2月は、雪見露天風呂をお楽しみいただけます。年末年始は大変混み合いますので、お早めのご予約をおすすめいたします。' }
+        ]
+      },
+      chinatsu_tsunagu: {
+        owner: 'yuzu', type: 'tsunagu', url: 'tsunagu.example/chinatsu.yuzuhara',
+        name: '柚原 千夏', icon: 'fa-user',
+        info: [
+          { icon: 'fa-briefcase', text: '湯ノ花温泉 ⟦旅館ゆずりは⟧ 若女将' },
+          { icon: 'fa-house', text: '湯ノ花温泉 在住' }
+        ],
+        friends: 213,
+        posts: [
+          { date: '9月30日', text: '母が、毎晩9時になると電話の前に座っています。理由は聞かなくてもわかります。\n春に家を出ていったあの子に、「怒ってないよ」とだけ伝えたいそうです。自分からかけたらいいのに、と言うと「あの子が決めたことの邪魔をしたくない」って。\nほんと、似たもの同士です。', likes: 41,
+            comments: [
+              { name: '柚原 富美子', text: '千夏、余計なこと書かないの。' },
+              { name: '柚原 千夏', text: 'お母さん、いつの間にTsunagu始めたの。' }
+            ] },
+          { date: '4月12日', text: '宿を、しばらく休むことになりました。七十年、ありがとうございました。', likes: 96, comments: [] }
+        ]
+      },
+
+      /* ---------------- ソラ ---------------- */
+      sora_kotori: {
+        owner: 'sora', type: 'kotori', url: 'kotori.social/sora_kumo3',
+        name: 'ソラ', user: 'sora_kumo3', icon: 'fa-cloud', color: 'linear-gradient(120deg,#bae6fd,#475569)',
+        bio: '大学3年 ｜ 夜勤明け ｜ 眠い', joined: '2024年4月',
+        following: 41, followers: 37,
+        posts: [
+          { t: '6時間前', text: '夜勤明け。1限、また無理だった。' },
+          { t: '1日前', text: '必修、たぶんまた落とした。' },
+          { t: '3日前', text: '#みなと学院大学 の学生ポータル、通知がたまってる。見るのが怖い。' },
+          { t: '1週間前', text: 'うちの看板、まだ外されてないらしい。母さんが写真を送ってきた。', scene: 'shutter' },
+          { t: '2週間前', text: '父さん、工場を閉めてから毎日なにしてるんだろう。電話しても「大丈夫だ」しか言わない。' },
+          { t: '1ヶ月前', text: '学費くらい、自分でなんとかする。そう決めたのは自分だ。' }
+        ]
+      },
+      sorami_works: {
+        owner: 'sora', type: 'site', url: 'www.sorami-works.example.jp',
+        name: '有限会社 空見製作所', sub: 'Sorami Works Co., Ltd.', icon: 'fa-gears', theme: '#3f4a55', accent: '#eef1f4',
+        catch: 'ねじ一本から、ものづくりを支える', nav: ['会社概要', '事業内容', '設備紹介', 'お知らせ', 'お問い合わせ'],
+        intro: '昭和53年創業。精密ねじ・金属部品の加工を手がけてまいりました。',
+        notices: [
+          { id: 'close', date: '2025.02.28', cat: 'ご挨拶', title: '事業終了のご挨拶', body: '平素より格別のご高配を賜り、厚く御礼申し上げます。\n\n有限会社 空見製作所は、本日をもちまして事業を終了いたしました。昭和53年の創業以来47年間、多くのお取引先様に支えられてまいりましたことに、心より感謝申し上げます。\n\n最後まで働いてくれた従業員、そしてわがままを許してくれた家族に、この場を借りてお礼を申し上げます。\n\n有限会社 空見製作所 代表取締役 ⟦空見 誠一⟧' },
+          { id: 'notice', date: '2024.11.15', cat: 'お知らせ', title: '受注受付終了のお知らせ', body: '誠に勝手ながら、2025年1月末をもちまして新規のご注文の受付を終了させていただきます。' },
+          { id: 'holiday', date: '2024.08.01', cat: 'お知らせ', title: '夏季休業のお知らせ', body: '8月10日〜8月18日は夏季休業とさせていただきます。' }
+        ]
+      },
+      seiichi_tsunagu: {
+        owner: 'sora', type: 'tsunagu', url: 'tsunagu.example/seiichi.sorami',
+        name: '空見 誠一', icon: 'fa-user',
+        info: [
+          { icon: 'fa-briefcase', text: '元 有限会社 ⟦空見製作所⟧ 代表' },
+          { icon: 'fa-house', text: '港南市 在住' }
+        ],
+        friends: 34,
+        posts: [
+          { date: '10月18日', text: '息子が「学費は自分で払う」と言って、夜のアルバイトを増やしているらしい。電話の声が、いつも眠そうだ。\n\n本当は、あの子が生まれた年から、学費の分だけは別の口座に積み立ててある。工場を閉めるときも、これだけには手をつけなかった。\n\n早く言えばいいのに、「父さんに任せておけ」の一言が、工場をつぶした今の自分には言えずにいる。', likes: 12,
+            comments: [{ name: '空見 雅子', text: 'あなたが言えないなら、私から言いましょうか。' }, { name: '空見 誠一', text: '次の電話で、ちゃんと言う。' }] },
+          { date: '3月2日', text: '工場の機械を、全部見送った。四十七年、ありがとう。', likes: 58, comments: [] }
+        ]
+      },
+      minato_univ: {
+        owner: 'sora', type: 'site', url: 'www.minato-gakuin.example.ac.jp',
+        name: 'みなと学院大学', sub: 'Minato Gakuin University', icon: 'fa-building-columns', theme: '#1f3a68', accent: '#e9eef7',
+        catch: '海に開かれた学び', nav: ['大学案内', '学部・大学院', '入試情報', '学生生活', 'お知らせ', 'アクセス'],
+        intro: 'みなと学院大学は、4学部9学科、約6,000人の学生が学ぶ総合大学です。',
+        notices: [
+          { id: 'fest', date: '2026.10.10', cat: '行事', title: '第58回 みなと祭（大学祭）開催のお知らせ', body: '11月2日・3日に大学祭を開催します。どなたでもご来場いただけます。' },
+          { id: 'support', date: '2026.10.01', cat: '学生生活', title: '【在学生の皆さんへ】学費・修学に関する相談窓口のご案内', body: '家計の急変（ご家族の失業・事業の廃止など）により学費の支払いが難しくなった方を対象に、授業料の分納・減免、給付型奨学金のご相談を受け付けています。\n\nまた、アルバイトや生活の事情で授業への出席が難しくなっている方は、学生相談室・クラス担任にご相談ください。履修の組み直しや、単位の取り方についても一緒に考えます。\n\n「こんなことで相談していいのかな」と思ったときこそ、気軽に来てください。\n\nみなと学院大学 学生支援課' },
+          { id: 'exam', date: '2026.07.01', cat: '教務', title: '前期定期試験の日程について', body: '前期定期試験は7月21日から8月1日まで実施します。' }
+        ]
+      },
+
+      /* ---------------- ハル ---------------- */
+      haru_kotori: {
+        owner: 'haru', type: 'kotori', url: 'kotori.social/haru_no_kaze4',
+        name: 'ハル', user: 'haru_no_kaze4', icon: 'fa-baseball', color: 'linear-gradient(120deg,#86efac,#166534)',
+        bio: '大学4年 ｜ 就活中 ｜ 元・高校球児', joined: '2023年4月',
+        following: 120, followers: 96,
+        posts: [
+          { t: '2時間前', text: '今日も最終面接で落ちた。 #就活' },
+          { t: '1日前', text: '「あなたの強みは？」って質問、この世からなくならないかな。' },
+          { t: '4日前', text: '9回裏の夢を、まだ見る。グローブの先をすり抜けていく、あの打球。' },
+          { t: '1週間前', text: 'リーダーシップなんて、自分が言っていい言葉じゃない。' },
+          { t: '2週間前', text: '高校の野球部、今年も試合を見に行けなかった。後輩たちに合わせる顔がない。引っ越しの箱から、これが出てきた。', scene: 'capball' }
+        ]
+      },
+      seiran_hs: {
+        owner: 'haru', type: 'site', url: 'www.seiran-hs.example.jp',
+        name: '私立青嵐高等学校', sub: 'Seiran High School', icon: 'fa-school', theme: '#14532d', accent: '#eaf5ee',
+        catch: '嵐にも、まっすぐに', nav: ['学校案内', '入試情報', '学校生活', '部活動', 'お知らせ', 'アクセス'],
+        intro: '青嵐高等学校は、文武両道を掲げる男女共学の私立高校です。',
+        notices: [
+          { id: 'open', date: '2026.09.20', cat: '入試', title: 'オープンスクール開催のお知らせ', body: '10月と11月にオープンスクールを開催します。部活動体験もできます。' },
+          { id: '2023', date: '2023.07.28', cat: '部活動', title: '硬式野球部 県大会ベスト8進出のご報告', body: '第105回全国高等学校野球選手権 県大会において、本校硬式野球部がベスト8に進出しました。準々決勝では惜しくも敗れましたが、最後まで粘り強い戦いを見せてくれました。\n\n主将（3年）のコメント\n「去年の夏、自分たちは先輩のエラーで負けたと言われました。でも自分はベンチから見ていました。負けた日、去年のキャプテンは泣きながら、最後まで全員の肩を叩いて『顔を上げろ』と声をかけていました。その姿を見て、自分たちは最後まであきらめないチームになれました。この結果は、先輩たちのものでもあります。」' },
+          { id: '2022', date: '2022.07.20', cat: '部活動', title: '硬式野球部 県大会 試合結果のご報告', body: '第104回全国高等学校野球選手権 県大会 3回戦の結果をご報告いたします。\n\n青嵐 3 − 4 東浜（9回サヨナラ）\n\n9回裏二死二・三塁から、遊撃手の失策により2点を返され、惜しくもサヨナラ負けとなりました。\n試合後、主将の春日（3年）は「自分のエラーで負けました。後輩たちには申し訳ない」と話しました。\n\nたくさんのご声援、ありがとうございました。' },
+          { id: 'fes', date: '2022.06.10', cat: '行事', title: '青嵐祭のご案内', body: '6月25日・26日に青嵐祭を開催します。' }
+        ]
+      },
+      seiran_board: {
+        owner: 'haru', type: 'board', url: 'bbs.chiiki-net.example/school/seiran/0722',
+        boardName: '地域ネット掲示板 ＞ 学校 ＞ 青嵐高校',
+        threadTitle: '【青嵐】野球部を応援するスレ Part.4',
+        replies: [
+          { no: 1, name: '名無しの応援団', date: '2026/07/15(水) 20:03', id: 'sE1rA', text: '今年も青嵐野球部を応援しよう' },
+          { no: 9, name: '名無しの応援団', date: '2026/07/16(木) 23:40', id: 'bK3tT', text: '4年前の東浜戦、まだ悔しい。あのショートのエラーさえなければ' },
+          { no: 10, name: '名無しの応援団', date: '2026/07/16(木) 23:52', id: 'mQ8wY', text: '>>9\nそれ言うのやめろよ。あのキャプテン、1年の夏からずっと一番早くグラウンドに来てたんだぞ' },
+          { no: 13, name: '元野球部（ベンチ）', date: '2026/07/17(金) 01:15', id: 'hR4uK', mark: 'confess', text: 'あの日、ベンチから見てました。\n試合のあと、キャプテンは自分のことより先に、泣いてる1年生のところに行って「お前らは来年がある、顔を上げろ」って言って回ってた。\n次の年のベスト8は、あの人の「最後まで声出せ」が合言葉だったからです。\nキャプテン、もしこれ見てたら、あの日のこと、もう自分のせいにしないでください。' },
+          { no: 14, name: '名無しの応援団', date: '2026/07/17(金) 07:02', id: 'bK3tT', text: '>>13\nごめん、知らなかった' },
+          { no: 15, name: '名無しの応援団', date: '2026/07/17(金) 08:30', id: 'sE1rA', text: '届くといいな' }
+        ]
+      }
+    },
+
+    /* search index: route + keywords（ページの owner で、開いているお便りの分だけ検索に出る） */
+    index: [
+      { route: 'page:kujira_kotori', title: 'くじら🐋 (@kujira_0325) / Kotori', host: 'kotori.social', snippet: '大学1年 ｜ 海のない街で暮らしてます ｜ 通知はオフ', keywords: ['kujira_0325', 'kujira', 'くじら'] },
+      { route: 'page:kujira_lumi', title: 'くじら (@kujira_0325) • Lumi 写真と動画', host: 'lumi.photo', snippet: '🐋 海が好き。でも夕方の海は少しだけ苦手', keywords: ['kujira_0325', 'kujira', 'くじら'] },
+      { route: 'page:shiomi_town', title: '汐見町役場 公式ウェブサイト', host: 'www.town.shiomi.example.jp', snippet: '海と灯台のまち 汐見。くらし・防災・観光・お知らせ。', keywords: ['汐見町', '汐見', '汐見町役場'] },
+      { route: 'notice:shiomi_town:typhoon', title: '【重要】台風第19号接近に伴う外出自粛のお願い - 汐見町役場', host: 'www.town.shiomi.example.jp', snippet: '8月25日（土）は終日、漁港および汐見灯台周辺への立ち入りを禁止…', keywords: ['台風', '台風第19号', '外出'] },
+      { route: 'notice:shiomi_town:lighthouse', title: '汐見灯台 改修工事のお知らせ - 汐見町役場', host: 'www.town.shiomi.example.jp', snippet: '町のシンボルである汐見灯台について、改修工事を実施します。', keywords: ['汐見灯台', '灯台'] },
+      { route: 'page:shiomi_board', title: '【港町】汐見の思い出を語ろう【白い灯台】 - 地域ネット掲示板', host: 'bbs.chiiki-net.example', snippet: '灯台の下って昔から「約束の場所」だったよな…', keywords: ['汐見灯台', '灯台', '約束', '汐見'] },
+
+      { route: 'page:saku_kotori', title: 'さく🌸 (@saku_flower_09) / Kotori', host: 'kotori.social', snippet: '大学2年 ｜ 心理学ゼミ ｜ 春と甘いものが好き。「来週のゼミ発表、考えるだけで手が冷たくなる…」', keywords: ['saku_flower_09', 'saku_flower', 'さく', 'saku'] },
+      { route: 'page:saku_lumi', title: 'さく (@saku.flower) • Lumi 写真と動画', host: 'lumi.photo', snippet: 'フォロワー154人・投稿6件 ─ 🌸 / 写真はゆるく', keywords: ['saku.flower', 'saku_flower', 'さく', 'saku'] },
+      { route: 'page:mio_kotori', title: 'みお (@mio_fl) / Kotori', host: 'kotori.social', snippet: 'このアカウントは非公開です。', keywords: ['mio_fl', 'mio', 'みお'] },
+      { route: 'page:sakura_hs', title: '県立桜台高等学校 公式ウェブサイト', host: 'www.sakuradai-hs.example.jp', snippet: '自律・協働・挑戦。創立62年の普通科高校。学校説明会、部活動、お知らせなど。', keywords: ['桜台高校', '桜台高等学校', '桜台', 'さくら台'] },
+      { route: 'notice:sakura_hs:program', title: '吹奏楽部 第38回定期演奏会 プログラム変更のお知らせ - 県立桜台高等学校', host: 'www.sakuradai-hs.example.jp', snippet: '部内事情により、2年生によるフルート独奏を中止し…', keywords: ['定期演奏会', '定演', 'フルート', 'ソロ', '桜台高校吹奏楽部'] },
+      { route: 'notice:sakura_hs:score', title: '部活動における備品管理と生徒への配慮について - 県立桜台高等学校', host: 'www.sakuradai-hs.example.jp', snippet: '吹奏楽部において、楽譜（指揮者用スコア）が所在不明となる事案が…', keywords: ['楽譜', 'スコア', '紛失', '桜台高校吹奏楽部'] },
+      { route: 'page:sakura_board', title: '【桜台】吹奏楽部について語るスレ Part.9 - 地域ネット掲示板', host: 'bbs.chiiki-net.example', snippet: '3年前っていうと、定演前の楽譜なくなった事件の年じゃない？…', keywords: ['吹奏楽部', '吹奏楽', '桜台高校吹奏楽部', '楽譜', 'スコア', '定期演奏会', '定演'] },
+
+      { route: 'page:matsu_kotori', title: 'マツ (@matsushita_s) / Kotori', host: 'kotori.social', snippet: '大学3年 ｜ カフェバイト ｜ 本と珈琲 ｜ 実名のほうはTsunaguで', keywords: ['matsushita_s', 'matsushita', 'マツ'] },
+      { route: 'page:matsu_tsunagu', title: '松下 翔太 | Tsunagu', host: 'tsunagu.example', snippet: '花園大学 経済学部 3年・カフェ・ソレイユ（アルバイト）・花園市立第二中学校 卒業', keywords: ['松下翔太', '松下', '翔太', 'matsushita'] },
+      { route: 'page:kei_tsunagu', title: '小林 圭 | Tsunagu', host: 'tsunagu.example', snippet: '花園大学 文学部 2年・花園市立第二中学校 卒業', keywords: ['小林圭', '小林', '圭'] },
+      { route: 'page:hanazono_lib', title: '花園市立図書館', host: 'www.lib.hanazono.example.jp', snippet: 'まちの本棚、みんなの居場所。利用案内・蔵書検索・郷土資料・お知らせ。', keywords: ['花園市立図書館', '花園図書館', '花園', '図書館'] },
+      { route: 'notice:hanazono_lib:return', title: '郷土資料『花園村古地図』の返却について - 花園市立図書館', host: 'www.lib.hanazono.example.jp', snippet: '2019年12月に所在不明となっておりました郷土資料が、匿名の郵便により返却され…', keywords: ['古地図', '郷土資料', '花園村'] },
+      { route: 'notice:hanazono_lib:pause', title: '中学生ボランティア活動の休止について - 花園市立図書館', host: 'www.lib.hanazono.example.jp', snippet: '当館書庫に保管していた郷土資料1点が所在不明となりました…', keywords: ['ボランティア', '郷土資料', '花園市立第二中学校'] },
+
+      { route: 'page:ame_kotori', title: 'あめ☂ (@ame_no_hi_02) / Kotori', host: 'kotori.social', snippet: '大学2年 ｜ 写真サークル ｜ 言葉にするのが、すごく下手です', keywords: ['ame_no_hi_02', 'ame_no_hi', 'あめ'] },
+      { route: 'page:ame_lumi', title: 'あめ (@ame.no.hi) • Lumi 写真と動画', host: 'lumi.photo', snippet: '☂ 雨の日の写真ばかり', keywords: ['ame.no.hi', 'ame_no_hi', 'あめ'] },
+      { route: 'page:yuki_jhs', title: '柚木市立柚木中学校 公式ウェブサイト', host: 'www.yuki-jhs.example.jp', snippet: 'おもいやり・やりぬく力。学校だより・行事・保護者の皆様へのお知らせ。', keywords: ['柚木中学校', '柚木中', '柚木'] },
+      { route: 'notice:yuki_jhs:sns', title: '生徒間のSNS利用に関するお願い - 柚木市立柚木中学校', host: 'www.yuki-jhs.example.jp', snippet: '生徒の私的な手紙を撮影した画像が、本人の同意なく共有される事案が…', keywords: ['手紙', 'SNS', 'グループチャット'] },
+      { route: 'page:yuki_board', title: '【柚木中】2021年卒 3年2組 同窓会スレ - 地域ネット掲示板', host: 'bbs.chiiki-net.example', snippet: '11月に3年2組の同窓会やります！ 参加できる人はここに…', keywords: ['同窓会', '3年2組', '柚木中', '柚木中学校', 'ゆうと'] },
+
+      { route: 'page:yuzu_kotori', title: 'ゆず🍋 (@yuzu_room101) / Kotori', host: 'kotori.social', snippet: '大学1年 ｜ 101号室で一人暮らし ｜ 自炊がんばり中', keywords: ['yuzu_room101', 'yuzu', 'ゆず'] },
+      { route: 'page:yuzuriha', title: '湯ノ花温泉 旅館ゆずりは 公式サイト', host: 'www.yuzuriha-ryokan.example.jp', snippet: '湯けむりの里で、七十年。客室九部屋の小さな宿。', keywords: ['旅館ゆずりは', 'ゆずりは', '湯ノ花温泉', '湯ノ花'] },
+      { route: 'notice:yuzuriha:close', title: '女将引退ならびに休館のお知らせ - 旅館ゆずりは', host: 'www.yuzuriha-ryokan.example.jp', snippet: '当館女将・柚原 富美子は、本年3月をもちまして女将を引退いたしました…', keywords: ['女将', '引退', '休館'] },
+      { route: 'notice:yuzuriha:greeting', title: '若女将よりご挨拶 - 旅館ゆずりは', host: 'www.yuzuriha-ryokan.example.jp', snippet: 'いつも旅館ゆずりはをご利用いただき、ありがとうございます。若女将の…', keywords: ['若女将'] },
+      { route: 'page:chinatsu_tsunagu', title: '柚原 千夏 | Tsunagu', host: 'tsunagu.example', snippet: '湯ノ花温泉 旅館ゆずりは 若女将', keywords: ['柚原千夏', '柚原', '千夏'] },
+
+      { route: 'page:sora_kotori', title: 'ソラ (@sora_kumo3) / Kotori', host: 'kotori.social', snippet: '大学3年 ｜ 夜勤明け ｜ 眠い', keywords: ['sora_kumo3', 'sora', 'ソラ'] },
+      { route: 'page:sorami_works', title: '有限会社 空見製作所', host: 'www.sorami-works.example.jp', snippet: 'ねじ一本から、ものづくりを支える。昭和53年創業。', keywords: ['空見製作所', '空見'] },
+      { route: 'notice:sorami_works:close', title: '事業終了のご挨拶 - 有限会社 空見製作所', host: 'www.sorami-works.example.jp', snippet: '有限会社 空見製作所は、本日をもちまして事業を終了いたしました…', keywords: ['事業終了', '廃業', '空見製作所'] },
+      { route: 'page:seiichi_tsunagu', title: '空見 誠一 | Tsunagu', host: 'tsunagu.example', snippet: '元 有限会社 空見製作所 代表・港南市 在住', keywords: ['空見誠一', '誠一'] },
+      { route: 'page:minato_univ', title: 'みなと学院大学 公式ウェブサイト', host: 'www.minato-gakuin.example.ac.jp', snippet: '海に開かれた学び。4学部9学科の総合大学。', keywords: ['みなと学院大学', 'みなと学院'] },
+      { route: 'notice:minato_univ:support', title: '【在学生の皆さんへ】学費・修学に関する相談窓口のご案内 - みなと学院大学', host: 'www.minato-gakuin.example.ac.jp', snippet: '家計の急変により学費の支払いが難しくなった方を対象に…', keywords: ['学費', '奨学金', '相談窓口', '留年', '単位'] },
+
+      { route: 'page:haru_kotori', title: 'ハル (@haru_no_kaze4) / Kotori', host: 'kotori.social', snippet: '大学4年 ｜ 就活中 ｜ 元・高校球児', keywords: ['haru_no_kaze4', 'haru_no_kaze', 'haru', 'ハル'] },
+      { route: 'page:seiran_hs', title: '私立青嵐高等学校 公式ウェブサイト', host: 'www.seiran-hs.example.jp', snippet: '嵐にも、まっすぐに。文武両道の男女共学校。', keywords: ['青嵐高校', '青嵐高等学校', '青嵐'] },
+      { route: 'notice:seiran_hs:2022', title: '硬式野球部 県大会 試合結果のご報告 - 私立青嵐高等学校', host: 'www.seiran-hs.example.jp', snippet: '青嵐 3 − 4 東浜（9回サヨナラ）。9回裏二死二・三塁から…', keywords: ['県大会', 'サヨナラ', '東浜', '青嵐高校野球部'] },
+      { route: 'notice:seiran_hs:2023', title: '硬式野球部 県大会ベスト8進出のご報告 - 私立青嵐高等学校', host: 'www.seiran-hs.example.jp', snippet: '本校硬式野球部がベスト8に進出しました。主将のコメント…', keywords: ['ベスト8', '青嵐高校野球部', '野球部'] },
+      { route: 'page:seiran_board', title: '【青嵐】野球部を応援するスレ Part.4 - 地域ネット掲示板', host: 'bbs.chiiki-net.example', snippet: '4年前の東浜戦、まだ悔しい…', keywords: ['野球部', '青嵐高校野球部', '東浜'] }
+    ]
+  };
+
+  /* =====================================================================
+   *  HELPERS / STATE
+   * ===================================================================== */
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const arr = (v) => (Array.isArray(v) ? v : []);
+  const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const br = (s) => String(s ?? '').replace(/\n/g, '<br>');
+  const norm = (s) => String(s ?? '').normalize('NFKC').toLowerCase().replace(/[\s@#＃・_\-.]/g, '');
+
+  const store = {
+    get(k, fb) { try { const v = localStorage.getItem(k); return v === null ? fb : (JSON.parse(v) ?? fb); } catch (e) { return fb; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  };
+  const K_CLUES = 'mnsd_clues_v3';
+  const K_CARDS = 'mnsd_cards_v3';
+  const K_NAME = 'mnsd_name_v2';
+  const K_HINTS = 'mnsd_hints_v3';
+
+  const listeners = arr(argDatabase?.listeners);
+  const pages = argDatabase?.pages || {};
+  const index = arr(argDatabase?.index);
+  const getListener = (id) => listeners.find((l) => l?.id === id) || null;
+
+  const clueOwner = {};
+  listeners.forEach((l) => arr(l?.clues).forEach((c) => { if (c?.key) clueOwner[c.key] = { listener: l, clue: c }; }));
+
+  const state = {
+    found: new Set(arr(store.get(K_CLUES, [])).filter((k) => clueOwner[k])),
+    cards: arr(store.get(K_CARDS, [])).filter((c) => c && typeof c === 'object'),
+    hints: (() => { const h = store.get(K_HINTS, {}); return h && typeof h === 'object' && !Array.isArray(h) ? h : {}; })(),
+    currentListener: null,
+    view: 'top'
+  };
+
+  const isSolved = (l) => {
+    const req = arr(l?.clues).filter((c) => c?.required);
+    return req.length > 0 && req.every((c) => state.found.has(c.key));
+  };
+  const foundCount = (l) => arr(l?.clues).filter((c) => state.found.has(c.key)).length;
+  const hasReplied = (l) => state.cards.some((c) => c?.listenerId === l?.id);
+
+  // 1通ずつ：前のお便りの真相にたどり着き、返事を送ると、次のお便りの封が開く
+  function statuses() {
+    const out = {};
+    let prevDone = true;
+    listeners.forEach((l) => {
+      const done = isSolved(l) && hasReplied(l);
+      out[l.id] = !prevDone ? 'locked' : (done ? 'done' : 'open');
+      prevDone = prevDone && done;
+    });
+    return out;
+  }
+  const isOpenId = (id) => { const st = statuses()[id]; return st === 'open' || st === 'done'; };
+  function routeOwner(r) {
+    if (!r) return null;
+    if (r.kind === 'page') return pages[r.id]?.owner || null;
+    if (r.kind === 'notice') return pages[r.site]?.owner || null;
+    return null;
+  }
+  const routeAllowed = (r) => { const o = routeOwner(r); return !o || isOpenId(o); };
+  function parseRouteStr(str) {
+    const x = String(str || '');
+    if (x.startsWith('page:')) return { kind: 'page', id: x.slice(5) };
+    if (x.startsWith('notice:')) { const [, site, nid] = x.split(':'); return { kind: 'notice', site, nid }; }
+    return null;
+  }
+
+  /* =====================================================================
+   *  TOAST
+   * ===================================================================== */
+  function toast(title, sub, kind) {
+    const root = $('#toast-root');
+    if (!root) return;
+    const el = document.createElement('div');
+    const big = kind === 'solved';
+    el.className = 'toast rounded-xl px-4 py-3 shadow-xl ' + (big ? 'bg-[#14213d] text-white border-2 border-[#f2b134]' : kind === 'clue' ? 'bg-white border-l-4 border-[#f2b134] text-[#222631]' : 'bg-white border border-[#e4e2dc] text-[#222631]');
+    el.innerHTML = `
+      <p class="text-sm font-bold ${big ? 'text-[#f2b134]' : ''}"><i class="fa-solid ${big ? 'fa-lightbulb' : kind === 'clue' ? 'fa-magnifying-glass-plus text-[#f2b134]' : 'fa-check text-emerald-500'} mr-1.5"></i>${esc(title)}</p>
+      ${sub ? `<p class="text-xs mt-0.5 ${big ? 'text-white/80' : 'text-[#6b7180]'}">${esc(sub)}</p>` : ''}`;
+    root.appendChild(el);
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 360); }, big ? 5200 : 3400);
+  }
+
+  /* =====================================================================
+   *  RADIO SITE VIEWS
+   * ===================================================================== */
+  function switchView(name) {
+    state.view = name;
+    $$('.prog-tab').forEach((b) => b.classList.toggle('active', b.dataset.viewLink === name));
+    $$('.view').forEach((v) => v.classList.toggle('active', v.id === 'view-' + name));
+    window.scrollTo({ top: Math.min(window.scrollY, ($('header.hero')?.offsetTop || 0) + ($('header.hero')?.offsetHeight || 0)), behavior: 'smooth' });
+  }
+
+  function renderTopLetters() {
+    const wrap = $('#top-letters');
+    if (!wrap) return;
+    const st = statuses();
+    wrap.innerHTML = listeners.map((l, i) => {
+      const s = st[l.id];
+      if (s === 'locked') {
+        return `<div class="rounded-xl border border-dashed border-[#c9c5bb] bg-[#efede7] p-4 text-[#9a978e]">
+          <p class="text-[11px]">第${i + 1}通</p>
+          <p class="mt-1 font-bold leading-snug"><i class="fa-solid fa-envelope mr-1.5"></i>未開封のお便り</p>
+          <p class="mt-3 text-[11px]"><i class="fa-solid fa-lock mr-1"></i>封がされています</p>
+        </div>`;
+      }
+      const status = s === 'done'
+        ? '<span class="text-[#b7791f] font-bold"><i class="fa-solid fa-paper-plane mr-1"></i>返事を届けた</span>'
+        : isSolved(l)
+          ? '<span class="text-[#b7791f] font-bold"><i class="fa-solid fa-lightbulb mr-1"></i>真相にたどり着いた ─ 返事を待っています</span>'
+          : `<span class="text-[var(--sub)]"><i class="fa-solid fa-magnifying-glass mr-1"></i>手がかり ${foundCount(l)} / ${arr(l.clues).length}</span>`;
+      return `<button type="button" class="text-left rounded-xl bg-white border ${s === 'done' ? 'border-[var(--gold)]' : 'border-[var(--line)]'} p-4 hover:shadow-md transition" data-view-link="letters" data-scroll="${esc(l.id)}">
+        <p class="text-[11px] text-[var(--sub)]">第${i + 1}通 ／ RN：${esc(l.radioName)}（${esc(l.profile)}）</p>
+        <p class="mt-1 font-bold text-[var(--navy)] leading-snug">「${esc(l.title)}」</p>
+        <p class="mt-3 text-[11px]">${status}</p>
+      </button>`;
+    }).join('');
+  }
+
+  function renderLetters() {
+    const wrap = $('#letters-list');
+    if (!wrap) return;
+    const st = statuses();
+    wrap.innerHTML = listeners.map((l, idx) => {
+      if (st[l.id] === 'locked') {
+        return `<article id="letter-${esc(l.id)}" class="rounded-xl border border-dashed border-[#c9c5bb] bg-[#efede7] px-5 sm:px-7 py-6 text-[#8f8c84]">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 shrink-0 rounded-lg bg-[#e2dfd7] grid place-items-center text-xl"><i class="fa-solid fa-envelope"></i></div>
+            <div class="min-w-0">
+              <p class="text-xs">第${idx + 1}通</p>
+              <p class="mincho font-bold text-[#6f7178] mt-0.5">このお便りは、まだ封が切られていません。</p>
+              <p class="text-[11px] mt-1"><i class="fa-solid fa-lock mr-1"></i>前のお便りに返事を届けると、封が開きます。</p>
+            </div>
+          </div>
+        </article>`;
+      }
+      const solved = isSolved(l);
+      const clues = arr(l.clues);
+      const n = foundCount(l);
+      const sent = state.cards.filter((c) => c?.listenerId === l.id).length;
+      const clueList = clues.map((c) => {
+        const ok = state.found.has(c.key);
+        const route = c.key.startsWith('p:') ? 'page:' + c.key.slice(2) : 'notice:' + c.key.slice(2);
+        return ok
+          ? `<li class="flex gap-2"><i class="fa-solid fa-circle-check text-[var(--gold)] mt-1"></i><span class="flex-1">${esc(c.label)}${c.required ? ' <span class="text-[10px] px-1 rounded bg-[#fff1d6] text-[#b7791f]">重要</span>' : ''}</span><button type="button" class="shrink-0 text-[11px] text-[#1d4e89] hover:underline" data-open-route="${esc(route)}">見る</button></li>`
+          : clueHintRow(c);
+      }).join('');
+      const truth = solved ? `
+        <div class="reveal mt-5 rounded-xl bg-[var(--navy)] text-white p-5">
+          <p class="text-[11px] tracking-widest text-[var(--gold)] font-bold"><i class="fa-solid fa-lightbulb mr-1"></i>わかったこと</p>
+          <h4 class="mincho text-xl font-black mt-1">${esc(l.truth?.title)}</h4>
+          <p class="text-sm leading-7 text-white/85 mt-3">${br(esc(l.truth?.story))}</p>
+          <div class="mt-4 rounded-lg bg-white/10 p-4">
+            <p class="text-xs font-bold text-[var(--gold)] mb-1">この人は、どんな人？</p>
+            <p class="text-sm leading-7">${esc(l.truth?.nature)}</p>
+          </div>
+          <p class="mt-4 text-sm mincho text-[#ffe2a6]"><i class="fa-solid fa-moon mr-1"></i>ヨル：${esc(l.truth?.yoru)}</p>
+        </div>` : '';
+      return `
+        <article id="letter-${esc(l.id)}" class="letter-card ${solved ? 'solved' : ''} rounded-xl bg-white border border-[var(--line)] overflow-hidden">
+          <div class="px-5 sm:px-7 pt-5 flex flex-wrap items-center gap-2 text-xs">
+            <span class="px-2 py-0.5 rounded bg-[var(--navy)] text-white">第${idx + 1}通</span>
+            ${st[l.id] === 'done' ? '<span class="px-2 py-0.5 rounded bg-[#fff1d6] text-[#b7791f] font-bold"><i class="fa-solid fa-paper-plane mr-1"></i>返事を届けた</span>' : ''}
+            <span class="text-[var(--sub)]">ラジオネーム <b class="text-[var(--ink)]">${esc(l.radioName)}</b>（${esc(l.profile)}）</span>
+          </div>
+          <div class="px-5 sm:px-7 pt-3">
+            <h3 class="mincho text-xl sm:text-2xl font-black text-[var(--navy)] leading-snug">${esc(l.title)}</h3>
+            <div class="paper-lines mt-4 text-[15px] leading-8 text-[#3d4250]">${br(esc(l.text))}</div>
+            <p class="mt-3 text-xs text-[var(--sub)]">投稿者のアカウント：<span class="font-bold text-[var(--ink)]">${esc(l.handle)}</span></p>
+          </div>
+          <div class="mx-5 sm:mx-7 mt-5 rounded-xl bg-[var(--paper)] p-4">
+            <div class="flex items-center justify-between gap-2">
+              <p class="font-bold text-sm text-[var(--navy)]"><i class="fa-solid fa-book-open mr-1.5 text-[var(--gold)]"></i>調査ノート</p>
+              <span class="text-xs text-[var(--sub)]">手がかり ${n} / ${clues.length}</span>
+            </div>
+            <p class="mt-2 text-[11px] text-[var(--sub)]">調べ物の途中で<span class="kw">青い文字</span>になっている言葉は、検索に使えるかもしれません。</p>
+            <ul class="mt-3 space-y-1.5 text-xs leading-5 text-[#3d4250]">${clueList}</ul>
+          </div>
+          <div class="px-5 sm:px-7">${truth}</div>
+          <div class="px-5 sm:px-7 py-5 flex flex-wrap items-center gap-3">
+            <button type="button" class="px-4 py-2 rounded-full border-2 border-[var(--navy)] text-[var(--navy)] text-sm font-bold hover:bg-[var(--navy)] hover:text-white transition" data-investigate="${esc(l.handle)}"><i class="fa-solid fa-magnifying-glass mr-1.5"></i>この人のことを調べる</button>
+            ${solved
+              ? `<button type="button" class="px-4 py-2 rounded-full bg-[var(--navy)] text-white text-sm font-bold hover:opacity-90" data-reply="${esc(l.id)}"><i class="fa-regular fa-envelope mr-1.5 text-[var(--gold)]"></i>${sent ? 'もう一通、返事を書く' : '返事を書く'}</button>`
+              : `<button type="button" disabled class="px-4 py-2 rounded-full bg-[#d6d3ca] text-[#8f8c84] text-sm font-bold cursor-not-allowed" title="この人のことが、まだわかっていません"><i class="fa-solid fa-lock mr-1.5"></i>返事を書く</button>
+                 <span class="text-[11px] text-[var(--sub)]">この人の「本当の夜」にたどり着くと、返事が書けます</span>`}
+            <span class="text-[11px] text-[var(--sub)] sm:ml-auto">${sent ? `返事を ${sent} 通送りました` : ''}</span>
+          </div>
+        </article>`;
+    }).join('');
+  }
+
+  /* ---- ヒント（ヨルのメモ） ---- */
+  const nextClue = (l) => arr(l?.clues).find((c) => c?.key && !state.found.has(c.key)) || null;
+
+  function hintBlock(l) {
+    const c = nextClue(l);
+    if (!c) return '';
+    const level = Number(state.hints[c.key]) || 0;
+    const memo = `<p class="mincho text-[13px] leading-7 text-[#3d4250]"><i class="fa-solid fa-pen-nib mr-1.5 text-[var(--gold)]"></i>${esc(c.hint || 'もう少し、投稿をよく読んでみよう。')}</p>`;
+    const fromBtn = c.from ? hintFromButton(c) : '';
+    let body;
+    if (level === 0) {
+      body = `<button type="button" class="text-xs font-bold text-[var(--navy)] px-3 py-1.5 rounded-full border border-[var(--line)] bg-white hover:border-[var(--gold)]" data-hint="${esc(c.key)}"><i class="fa-regular fa-lightbulb mr-1 text-[var(--gold)]"></i>ヒントを見る</button>`;
+    } else {
+      body = memo + (fromBtn ? `<div class="mt-2">${fromBtn}</div>` : '');
+    }
+    return `<div class="mt-3 pt-3 border-t border-dashed border-[#d6d3ca]">${body}</div>`;
+  }
+
+  // 調査ノートの「まだ見つけていない手がかり」1行ぶん（手がかりごとにヒントが見られる）
+  function clueHintRow(c) {
+    const opened = (Number(state.hints[c.key]) || 0) > 0;
+    const head = `<div class="flex items-start gap-2">
+        <i class="fa-regular fa-circle mt-1 text-[#a3a7b2]"></i>
+        <span class="flex-1 text-[#a3a7b2]">？？？ ── まだ見つけていない手がかり${c.required ? '（重要）' : ''}</span>
+        <button type="button" class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full border border-[var(--gold)] ${opened ? 'bg-[#fff8e6]' : 'bg-white'} text-[var(--navy)] hover:bg-[#fff8e6]" data-hint-toggle="${esc(c.key)}" aria-expanded="${opened ? 'true' : 'false'}"><i class="fa-regular fa-lightbulb mr-1 text-[var(--gold)]"></i>${opened ? 'ヒントを閉じる' : 'ヒントを見る'}</button>
+      </div>`;
+    const memo = opened ? `<div class="ml-6 mt-1.5 rounded-lg bg-white/70 border border-dashed border-[#d6d3ca] px-3 py-2">
+        <p class="mincho text-[13px] leading-7 text-[#3d4250]"><i class="fa-solid fa-pen-nib mr-1.5 text-[var(--gold)]"></i>${esc(c.hint || 'もう少し、投稿をよく読んでみよう。')}</p>
+        ${c.from ? `<div class="mt-1.5">${hintFromButton(c)}</div>` : ''}
+      </div>` : '';
+    return `<li>${head}${memo}</li>`;
+  }
+
+  // ヒントがあるページの名前（ボタンの文字に使う）
+  function routeLabel(routeStr, post) {
+    const r = parseRouteStr(routeStr);
+    if (!r) return 'ヒントの場所';
+    if (r.kind === 'notice') {
+      const site = pages[r.site];
+      const n = arr(site?.notices).find((x) => x?.id === r.nid);
+      return `${site?.name || ''}のお知らせ「${n?.title || ''}」`;
+    }
+    const pg = pages[r.id];
+    if (!pg) return 'ヒントの場所';
+    if (pg.type === 'kotori') return `${pg.name}のKotori`;
+    if (pg.type === 'lumi') return post != null ? `${pg.name}のLumiの投稿（${arr(pg.posts)[post]?.date || ''}）` : `${pg.name}のLumi`;
+    if (pg.type === 'tsunagu') return `${pg.name}のTsunagu`;
+    if (pg.type === 'board') return pg.threadTitle || '掲示板';
+    return pg.name || 'ヒントの場所';
+  }
+  function hintFromButton(c) {
+    const label = routeLabel(c.from, c.post);
+    return `<button type="button" class="text-xs font-bold px-3 py-1.5 rounded-full bg-white border border-[var(--gold)] text-[var(--navy)] hover:bg-[#fff8e6] max-w-full text-left" data-hint-from="${esc(c.from)}" data-hint-post="${c.post != null ? esc(c.post) : ''}" title="${esc(label)}"><i class="fa-solid fa-location-arrow mr-1 text-[var(--gold)]"></i>ヒントの場所を見る：<span class="font-normal">${esc(label)}</span></button>`;
+  }
+
+  function renderHintPanel() {
+    const panel = $('#b-hint-list');
+    if (!panel) return;
+    const st = statuses();
+    const items = listeners.filter((l) => st[l.id] === 'open').map((l) => {
+      const done = !nextClue(l);
+      return `<div class="py-3 border-b border-[#eee] last:border-0">
+        <p class="text-xs font-bold text-[#24262b]">RN ${esc(l.radioName)} <span class="font-normal text-[#6f7178]">「${esc(l.title)}」</span></p>
+        ${done ? '<p class="mt-1 text-xs text-[#a8925c]"><i class="fa-solid fa-lightbulb mr-1"></i>すべての手がかりを見つけた</p>' : isSolved(l) && !hasReplied(l) ? `<div class="mt-2"><p class="mincho text-[13px] leading-7 text-[#3d4250]"><i class="fa-solid fa-pen-nib mr-1.5 text-[var(--gold)]"></i>この人の夜は、もう見えている。残りの手がかりを探してもいいし、返事を書いてもいい。</p>${hintBlock(l).replace('mt-3 pt-3 border-t border-dashed border-[#d6d3ca]', 'mt-2')}</div>` : hintBlock(l).replace('mt-3 pt-3 border-t border-dashed border-[#d6d3ca]', 'mt-2')}
+      </div>`;
+    }).join('');
+    panel.innerHTML = items || '<p class="py-4 text-xs text-[#6f7178]">今は、読めるお便りがありません。</p>';
+  }
+
+  function setHint(key, level) {
+    if (!key) return;
+    state.hints[key] = Math.max(Number(state.hints[key]) || 0, level);
+    store.set(K_HINTS, state.hints);
+    renderLetters();
+    renderHintPanel();
+  }
+
+  function renderProgress() {
+    const solved = listeners.filter(isSolved).length;
+    const total = listeners.length;
+    const pl = $('#progress-label'); if (pl) pl.textContent = `${solved} / ${total}`;
+    const pb = $('#progress-bar'); if (pb) pb.style.width = total ? (solved / total * 100) + '%' : '0%';
+    const np = $('#nav-progress'); if (np) np.textContent = `${solved}/${total}`;
+    const nw = $('#nav-words'); if (nw) nw.textContent = String(state.cards.length);
+    const side = $('#side-progress');
+    const st = statuses();
+    if (side) side.innerHTML = listeners.map((l, i) => {
+      const c = arr(l.clues).length;
+      const f = foundCount(l);
+      if (st[l.id] === 'locked') {
+        return `<div class="text-white/35"><div class="flex justify-between"><span>第${i + 1}通</span><span><i class="fa-solid fa-lock"></i> 未開封</span></div><div class="mt-1 h-1.5 rounded-full bg-white/10"></div></div>`;
+      }
+      const label = st[l.id] === 'done' ? '<i class="fa-solid fa-paper-plane text-[var(--gold)]"></i> 返事済み' : isSolved(l) ? '<i class="fa-solid fa-lightbulb text-[var(--gold)]"></i> 解明' : `${f}/${c}`;
+      return `<div>
+        <div class="flex justify-between"><span>第${i + 1}通 ${esc(l.radioName)}</span><span>${label}</span></div>
+        <div class="mt-1 h-1.5 rounded-full bg-white/15 overflow-hidden"><div class="h-full bg-[var(--gold)]" style="width:${c ? f / c * 100 : 0}%"></div></div>
+      </div>`;
+    }).join('');
+    const bs = $('#b-status');
+    if (bs) bs.textContent = `調査ノート：手がかり ${state.found.size} 件 ／ 真相 ${solved}・${total}`;
+  }
+
+  function renderWords() {
+    const wrap = $('#words-list');
+    if (!wrap) return;
+    const cards = state.cards.slice().sort((a, b) => (b?.createdAt || 0) - (a?.createdAt || 0));
+    if (!cards.length) {
+      wrap.innerHTML = `<div class="sm:col-span-2 rounded-xl border-2 border-dashed border-[#d6d3cb] bg-white p-10 text-center">
+        <i class="fa-regular fa-envelope-open text-3xl text-[var(--gold)]"></i>
+        <p class="mt-3 text-sm font-bold text-[var(--navy)]">まだ言葉はありません</p>
+        <p class="mt-1 text-xs text-[var(--sub)] leading-6">お便りに返事を書くと、あなたが自分自身へ贈った言葉がここに残ります。</p>
+        <button type="button" class="mt-4 px-4 py-2 rounded-full bg-[var(--navy)] text-white text-xs font-bold" data-view-link="letters">お便りを読む</button>
+      </div>`;
+      return;
+    }
+    const tones = ['linear-gradient(135deg,#fff7e6,#ffe3c2)', 'linear-gradient(135deg,#eef2ff,#e0e7ff)', 'linear-gradient(135deg,#fdf2f8,#fce7f3)', 'linear-gradient(135deg,#ecfeff,#dbeafe)', 'linear-gradient(135deg,#f0fdf4,#dcfce7)'];
+    wrap.innerHTML = cards.map((c) => {
+      const l = getListener(c?.listenerId);
+      const d = new Date(c?.createdAt || 0);
+      const ds = isNaN(d) ? '' : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+      return `<article class="rounded-2xl p-[2px]" style="background:linear-gradient(135deg,#f2b134,#7c8fd6)">
+        <div class="rounded-2xl p-5 h-full flex flex-col" style="background:${tones[Math.abs(Number(c?.tone) || 0) % tones.length]}">
+          <div class="flex items-center gap-2 text-[11px] text-[var(--sub)]">
+            <i class="fa-solid fa-feather-pointed text-[var(--gold)]"></i>
+            <span>${esc(c?.radioName)} から、いつかの自分へ</span>
+            <button type="button" class="ml-auto w-7 h-7 rounded-full hover:bg-black/5" data-del="${esc(c?.id)}" aria-label="削除"><i class="fa-regular fa-trash-can"></i></button>
+          </div>
+          <p class="mincho mt-3 text-lg leading-9 text-[var(--navy)] font-bold break-words">${br(esc(c?.toSelf))}</p>
+          <div class="mt-auto pt-4">
+            <div class="rounded-lg bg-white/70 px-3 py-2">
+              <p class="text-[11px] text-[var(--sub)]"><i class="fa-regular fa-envelope mr-1"></i>RN ${esc(l?.radioName || '')} さんへの返事</p>
+              <p class="text-xs leading-6 mt-0.5 break-words">${br(esc(c?.toThem))}</p>
+            </div>
+            <p class="mt-2 text-right text-[10px] text-[var(--sub)]">${esc(ds)}</p>
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  function renderAll() {
+    renderTopLetters();
+    renderLetters();
+    renderWords();
+    renderProgress();
+    renderHintPanel();
+  }
+
+  function renderOnAir() {
+    const el = $('#onair');
+    if (!el) return;
+    el.className = 'px-3 py-1 rounded font-bold bg-[#e11d48] text-white';
+    el.innerHTML = '<i class="fa-solid fa-circle text-[8px] mr-1 animate-pulse"></i>ただいま放送中';
+  }
+
+  /* =====================================================================
+   *  SILENT PLAYER  ── 放送中なのに、何も聞こえない
+   * ===================================================================== */
+  const player = { playing: false, start: 0, timer: null, raf: null, msgIdx: -1 };
+  const silentMessages = [
+    { at: 0, text: '受信しています……' },
+    { at: 4, text: '音声信号が検出できません' },
+    { at: 10, text: '電波は届いています。けれど、声だけが聞こえない。' },
+    { at: 18, text: 'スタジオのマイクは、ずっとオンのままです。' },
+    { at: 28, text: '……誰かが、お便りを読みあげるのを待っているみたいだ。' }
+  ];
+
+  function drawMeter(t) {
+    const cv = $('#meter');
+    if (!cv || !cv.getContext) return;
+    const ctx = cv.getContext('2d');
+    const w = cv.width, h = cv.height, mid = h / 2;
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
+    if (!player.playing) return;
+    ctx.strokeStyle = 'rgba(242,177,52,.85)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const blipAt = (t / 22) % (w * 3);
+    for (let x = 0; x <= w; x++) {
+      let y = mid + (Math.random() - .5) * .6;
+      const d = Math.abs(x - blipAt);
+      if (d < 6) y += Math.sin(d * 1.4) * (6 - d) * .9;
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  function playerLoop(t) {
+    drawMeter(t || 0);
+    if (player.playing) player.raf = requestAnimationFrame(playerLoop);
+  }
+
+  function setPlayerSub(text) {
+    const el = $('#player-sub');
+    if (!el) return;
+    el.style.opacity = '0';
+    setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 300);
+  }
+
+  function tickPlayer() {
+    const sec = Math.floor((Date.now() - player.start) / 1000);
+    const pt = $('#player-time');
+    if (pt) pt.textContent = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
+    let idx = 0;
+    silentMessages.forEach((m, i) => { if (sec >= m.at) idx = i; });
+    const allSolved = listeners.length > 0 && listeners.every(isSolved);
+    if (allSolved && sec >= 12) idx = 99;
+    if (idx !== player.msgIdx) {
+      player.msgIdx = idx;
+      setPlayerSub(idx === 99 ? '……ノイズの向こうで、ほんの一瞬、誰かが「ありがとう」と言った気がした。' : silentMessages[idx].text);
+    }
+  }
+
+  function togglePlayer() {
+    const icon = $('#play-icon');
+    const btn = $('#play-btn');
+    if (player.playing) {
+      player.playing = false;
+      BGM.duck(false);
+      clearInterval(player.timer);
+      cancelAnimationFrame(player.raf);
+      drawMeter(0);
+      if (icon) icon.innerHTML = '<i class="fa-solid fa-play translate-x-[1px]"></i>';
+      if (btn) btn.setAttribute('aria-label', '放送を聴く');
+      const pt = $('#player-time'); if (pt) pt.textContent = '--:--';
+      setPlayerSub('▶ を押すと、放送を聴くことができます');
+      return;
+    }
+    player.playing = true;
+    BGM.duck(true);
+    player.start = Date.now();
+    player.msgIdx = -1;
+    if (icon) icon.innerHTML = '<i class="fa-solid fa-stop"></i>';
+    if (btn) btn.setAttribute('aria-label', '停止');
+    tickPlayer();
+    player.timer = setInterval(tickPlayer, 500);
+    player.raf = requestAnimationFrame(playerLoop);
+  }
+
+  /* =====================================================================
+   *  IN-APP BROWSER
+   * ===================================================================== */
+  const B = { back: [], fwd: [], cur: null, lumiSel: null };
+
+  function parseRoute(str) {
+    const s = String(str || '');
+    if (s.startsWith('page:')) return { kind: 'page', id: s.slice(5) };
+    if (s.startsWith('notice:')) { const [, site, nid] = s.split(':'); return { kind: 'notice', site, nid }; }
+    if (s.startsWith('search:')) return { kind: 'search', q: s.slice(7) };
+    return { kind: 'home' };
+  }
+  const routeKey = (r) => r?.kind === 'page' ? 'p:' + r.id : r?.kind === 'notice' ? `n:${r.site}:${r.nid}` : null;
+
+  function openBrowser(route) {
+    const b = $('#browser');
+    b.classList.remove('closed');
+    b.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (route) go(route);
+    else if (!B.cur) go({ kind: 'home' });
+  }
+  function closeBrowser() {
+    const b = $('#browser');
+    b.classList.add('closed');
+    b.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function go(route, opts) {
+    const push = !(opts && opts.noPush);
+    if (push && B.cur) { B.back.push(B.cur); B.fwd = []; }
+    B.cur = route;
+    B.lumiSel = null;
+    renderBrowser();
+    const v = $('#b-view'); if (v) v.scrollTop = 0;
+    const key = routeKey(route);
+    if (key && routeAllowed(route)) registerClue(key);
+  }
+
+  function registerClue(key) {
+    const owner = clueOwner[key];
+    if (!owner || state.found.has(key)) return;
+    const wasSolved = isSolved(owner.listener);
+    state.found.add(key);
+    store.set(K_CLUES, Array.from(state.found));
+    toast('手がかりを見つけた', `${owner.listener.radioName}の調査ノート：${owner.clue.label}`, 'clue');
+    if (!wasSolved && isSolved(owner.listener)) {
+      setTimeout(() => toast(`「${owner.listener.radioName}」の真相が見えてきました`, 'お便り紹介ページの調査ノートを読んでみましょう', 'solved'), 700);
+    }
+    renderAll();
+  }
+
+  function runSearchBox(box) {
+    const q = (box?.querySelector('input')?.value || '').trim();
+    if (q) go({ kind: 'search', q });
+    else box?.querySelector('input')?.focus();
+  }
+
+  function search(q) {
+    const nq = norm(q);
+    if (!nq) return [];
+    return index.filter((e) => routeAllowed(parseRouteStr(e?.route))).filter((e) => arr(e?.keywords).some((k) => {
+      const nk = norm(k);
+      return nk && (nq.includes(nk) || (nq.length >= 2 && nk.includes(nq)));
+    }));
+  }
+
+  function routeUrl(r) {
+    if (r.kind === 'home') return 'sagasu.example';
+    if (r.kind === 'search') return 'sagasu.example/search?q=' + r.q;
+    if (r.kind === 'page') return pages[r.id]?.url || '';
+    if (r.kind === 'notice') return (pages[r.site]?.url || '') + '/news/' + r.nid;
+    return '';
+  }
+
+  function renderBrowser() {
+    const r = B.cur || { kind: 'home' };
+    const view = $('#b-view');
+    let html = '';
+    let title = 'Sagasu';
+    let icon = 'fa-magnifying-glass';
+    try {
+      if (!routeAllowed(r)) html = v404();
+      else if (r.kind === 'home') html = vHome();
+      else if (r.kind === 'search') { html = vResults(r.q); title = `${r.q} - Sagasu検索`; }
+      else if (r.kind === 'page') {
+        const p = pages[r.id];
+        if (!p) html = v404();
+        else {
+          if (p.type === 'kotori') { html = vKotori(p); title = `${p.name} (@${p.user}) / Kotori`; icon = 'fa-dove'; }
+          else if (p.type === 'lumi') { html = vLumi(p); title = `${p.name} (@${p.user}) • Lumi`; icon = 'fa-camera-retro'; }
+          else if (p.type === 'tsunagu') { html = vTsunagu(p); title = `${p.name} | Tsunagu`; icon = 'fa-people-group'; }
+          else if (p.type === 'site') { html = vSite(p, null); title = p.name; icon = p.icon || 'fa-globe'; }
+          else if (p.type === 'board') { html = vBoard(p); title = p.threadTitle; icon = 'fa-comments'; }
+          else html = v404();
+        }
+      } else if (r.kind === 'notice') {
+        const p = pages[r.site];
+        const n = arr(p?.notices).find((x) => x?.id === r.nid);
+        if (!p || !n) html = v404();
+        else { html = vSite(p, n); title = `${n.title} - ${p.name}`; icon = p.icon || 'fa-globe'; }
+      }
+    } catch (err) {
+      html = v404();
+    }
+    view.innerHTML = html;
+    $('#b-tab-title').textContent = title;
+    $('#b-tab-icon').innerHTML = '<i class="fa-solid ' + icon + '"></i>';
+    $('#b-address').value = routeUrl(r);
+    $('#b-back').disabled = B.back.length === 0;
+    $('#b-fwd').disabled = B.fwd.length === 0;
+    if (r.kind === 'home') setTimeout(() => $('#sg-input')?.focus(), 60);
+  }
+
+  const searchBox = (val) => `
+    <div class="sg-form flex items-center gap-2 rounded-full border border-[#dfe1e5] hover:shadow-md focus-within:shadow-md px-4 py-2.5 bg-white transition" role="search">
+      <i class="fa-solid fa-magnifying-glass text-[#9aa0a6]"></i>
+      <input id="sg-input" type="search" enterkeyhint="search" class="sg-input flex-1 min-w-0 outline-none text-base" value="${esc(val || '')}" placeholder="キーワードを入力" autocomplete="off" aria-label="検索">
+      <button type="button" class="sg-go text-sm font-bold text-[#1a73e8] px-2">検索</button>
+    </div>`;
+  const logo = (size) => `<span class="font-black tracking-tight ${size}" style="font-family:Arial,sans-serif"><span style="color:#4285f4">S</span><span style="color:#ea4335">a</span><span style="color:#fbbc05">g</span><span style="color:#4285f4">a</span><span style="color:#34a853">s</span><span style="color:#ea4335">u</span></span>`;
+
+  function vHome() {
+    return `<div class="min-h-full flex flex-col items-center justify-center px-5 py-16">
+      ${logo('text-6xl sm:text-7xl')}
+      <div class="w-full max-w-xl mt-8">${searchBox('')}</div>
+      <p class="mt-6 text-xs text-[#70757a] text-center">Sagasu ─ 知りたいことを、見つけよう。</p>
+    </div>`;
+  }
+
+  function vResults(q) {
+    const res = search(q);
+    const head = `<div class="border-b border-[#ebebeb] px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+      <button type="button" data-nav="home">${logo('text-2xl')}</button>
+      <div class="flex-1 max-w-2xl">${searchBox(q)}</div>
+    </div>`;
+    if (!res.length) {
+      return head + `<div class="px-4 sm:px-8 py-8 max-w-2xl text-sm text-[#202124] leading-7">
+        <p><b>${esc(q)}</b> に一致する情報は見つかりませんでした。</p>
+        <ul class="list-disc pl-5 mt-2 text-[#4d5156]"><li>キーワードに誤字・脱字がないか確認してください。</li><li>SNSの投稿やお知らせに出てくる別のキーワードで試してください。</li><li>キーワードの数を減らしてください。</li></ul>
+      </div>`;
+    }
+    return head + `<div class="px-4 sm:px-8 py-4 max-w-2xl">
+      <p class="text-xs text-[#70757a] mb-4">約 ${res.length} 件</p>
+      ${res.map((e) => `
+        <div class="mb-7">
+          <div class="flex items-center gap-2 text-xs text-[#202124]">
+            <span class="w-6 h-6 rounded-full bg-[#f1f3f4] grid place-items-center text-[10px] text-[#5f6368]"><i class="fa-solid fa-globe"></i></span>
+            <span class="truncate">${esc(e.host)}</span>
+          </div>
+          <a class="navlink block mt-1 text-lg leading-snug" data-nav="${esc(e.route)}">${esc(e.title)}</a>
+          <p class="text-sm text-[#4d5156] mt-1 leading-6">${esc(e.snippet)}</p>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  function v404() {
+    return `<div class="px-6 py-20 text-center text-[#5f6368]"><p class="text-5xl font-black">404</p><p class="mt-2 text-sm">ページが見つかりません。</p><button type="button" class="mt-4 text-sm text-[#1a73e8]" data-nav="home">Sagasuトップへ</button></div>`;
+  }
+
+  const mk = (h) => String(h).replace(/⟦([^⟦⟧]+)⟧/g, '<span class="kw">$1</span>');
+  const fmtSNS = (t) => mk(br(esc(t).replace(/#([^\s#<、。！？]+)/g, (m, tag) => `<span class="hashtag" data-search="${tag}">#${tag}</span>`)));
+  const fmtBBS = (t) => mk(br(esc(t).replace(/&gt;&gt;(\d+)/g, '<span class="anchor">&gt;&gt;$1</span>')));
+  const numfmt = (n) => (Number(n) || 0).toLocaleString('ja-JP');
+
+  function vKotori(p) {
+    const kAvSrc = avatarImage(p);
+    const kAv = kAvSrc ? `<img src="${esc(kAvSrc)}" alt="" class="w-full h-full object-cover" draggable="false">` : `<i class="fa-solid ${esc(p.icon)}"></i>`;
+    const links = arr(p.links).map((l) => `<a class="hashtag" data-nav="${esc(l.nav)}"><i class="fa-solid fa-link mr-1"></i>${esc(l.text)}</a>`).join('<span class="mx-2 text-[#cfd9de]">|</span>');
+    const posts = p.locked
+      ? `<div class="py-16 px-6 text-center"><i class="fa-solid fa-lock text-3xl text-[#536471]"></i><p class="mt-3 font-black text-xl text-[#0f1419]">このアカウントのポストは非公開です</p><p class="mt-1 text-sm text-[#536471]">承認されたフォロワーのみがポストを表示できます。</p></div>`
+      : arr(p.posts).map((x) => `
+        <div class="flex gap-3 px-4 py-3 border-b border-[#eff3f4] hover:bg-[#f7f9f9]">
+          <div class="w-10 h-10 shrink-0 rounded-full overflow-hidden grid place-items-center text-white" style="background:${esc(p.color)}">${kAv}</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-[15px]"><b class="text-[#0f1419]">${esc(p.name)}</b> <span class="text-[#536471]">@${esc(p.user)} · ${esc(x?.t)}</span></p>
+            <p class="text-[15px] leading-6 text-[#0f1419] mt-0.5 break-words">${fmtSNS(x?.text)}</p>
+            ${(x?.scene || x?.photo) ? `<div class="mt-3 rounded-2xl overflow-hidden border border-[#cfd9de] max-w-[460px]"><img src="${esc(postImage(x, (p.user || '') + '-' + (x?.t || '')))}" alt="" class="w-full h-auto block" draggable="false"></div>` : ''}
+            <div class="mt-2 flex gap-10 text-[13px] text-[#536471]"><i class="fa-regular fa-comment"></i><i class="fa-solid fa-retweet"></i><i class="fa-regular fa-heart"></i><i class="fa-solid fa-chart-simple"></i></div>
+          </div>
+        </div>`).join('');
+    return `<div class="bg-white min-h-full">
+      <div class="max-w-[600px] mx-auto border-x border-[#eff3f4] min-h-full">
+        <div class="px-4 py-2 flex items-center gap-4 border-b border-[#eff3f4]">
+          <span class="text-[#0f1419] font-black flex items-center gap-1.5"><i class="fa-solid fa-dove text-[#1d9bf0]"></i>Kotori</span>
+          <span class="text-xs text-[#536471] ml-auto">${p.locked ? 0 : arr(p.posts).length} 件のポスト</span>
+        </div>
+        <div class="h-32 sm:h-44" style="background:${esc(p.color)}"></div>
+        <div class="px-4">
+          <div class="flex justify-between items-end -mt-10 sm:-mt-14">
+            <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full border-4 border-white overflow-hidden grid place-items-center text-white text-3xl" style="background:${esc(p.color)}">${kAv}</div>
+            <span class="px-4 py-1.5 rounded-full bg-[#0f1419] text-white text-sm font-bold">フォロー</span>
+          </div>
+          <p class="mt-3 text-xl font-black text-[#0f1419]">${esc(p.name)} ${p.locked ? '<i class="fa-solid fa-lock text-base"></i>' : ''}</p>
+          <p class="text-[15px] text-[#536471]">@${esc(p.user)}</p>
+          <p class="mt-3 text-[15px] text-[#0f1419]">${mk(esc(p.bio))}</p>
+          ${links ? `<p class="mt-2 text-sm">${links}</p>` : ''}
+          <p class="mt-2 text-sm text-[#536471]"><i class="fa-regular fa-calendar mr-1"></i>${esc(p.joined)}からKotoriを利用しています</p>
+          <p class="mt-2 text-sm text-[#536471]"><b class="text-[#0f1419]">${numfmt(p.following)}</b> フォロー中　<b class="text-[#0f1419]">${numfmt(p.followers)}</b> フォロワー</p>
+        </div>
+        <div class="flex mt-3 border-b border-[#eff3f4] text-[15px]"><span class="flex-1 text-center py-3 font-bold border-b-4 border-[#1d9bf0]">ポスト</span><span class="flex-1 text-center py-3 text-[#536471]">返信</span><span class="flex-1 text-center py-3 text-[#536471]">メディア</span></div>
+        ${posts}
+      </div>
+    </div>`;
+  }
+
+  /* =====================================================================
+   *  SCENE ART ── Lumi の投稿写真を、スマホで撮った写真風に描く
+   *  post.photo に画像ファイルのパスを書くと、その画像が優先して使われる
+   * ===================================================================== */
+  const SceneArt = (() => {
+    const S = 540;
+    const cache = {};
+
+    function rngOf(seed) {
+      let a = 0x9e3779b9;
+      for (const ch of String(seed)) a = (Math.imul(a ^ ch.charCodeAt(0), 2654435761)) | 0;
+      return () => {
+        a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const lin = (c, x0, y0, x1, y1, stops) => { const g = c.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, col]) => g.addColorStop(o, col)); return g; };
+    const rgba = (rgb, a) => `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
+    function glow(c, x, y, r, rgb, a) {
+      const g = c.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, rgba(rgb, a));
+      g.addColorStop(1, rgba(rgb, 0));
+      c.fillStyle = g;
+      c.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    function cloud(c, rng, x, y, w, a) {
+      for (let i = 0; i < 9; i++) {
+        glow(c, x + (rng() - 0.5) * w, y + (rng() - 0.5) * w * 0.25, w * (0.18 + rng() * 0.22), [255, 255, 255], a * (0.5 + rng() * 0.5));
+      }
+    }
+    function shadowed(c, blur, oy, alpha, fn) {
+      c.save();
+      c.shadowColor = `rgba(0,0,0,${alpha})`;
+      c.shadowBlur = blur;
+      c.shadowOffsetY = oy;
+      fn();
+      c.restore();
+    }
+    function blossom(c, x, y, r, rng) {
+      const cols = ['#f9c6d3', '#fbdbe3', '#f6b3c5', '#fde9ee'];
+      c.fillStyle = cols[Math.floor(rng() * cols.length)];
+      for (let k = 0; k < 5; k++) {
+        const a = (k / 5) * Math.PI * 2 + rng();
+        c.beginPath();
+        c.ellipse(x + Math.cos(a) * r * 0.55, y + Math.sin(a) * r * 0.55, r * 0.55, r * 0.38, a, 0, Math.PI * 2);
+        c.fill();
+      }
+      c.fillStyle = '#e07a96';
+      c.beginPath(); c.arc(x, y, r * 0.22, 0, Math.PI * 2); c.fill();
+    }
+    function sky(c, top, bottom, h) {
+      c.fillStyle = lin(c, 0, 0, 0, h, [[0, top], [1, bottom]]);
+      c.fillRect(0, 0, S, h);
+    }
+
+    /* ---------- scenes ---------- */
+    const scenes = {
+      sea(c, rng, o) {
+        sky(c, o.dusk ? '#7d8fb8' : '#78acd6', o.dusk ? '#f2c7a5' : '#dcebf3', S * 0.56);
+        for (let i = 0; i < 4; i++) cloud(c, rng, rng() * S, S * (0.08 + rng() * 0.3), 160 + rng() * 120, 0.35);
+        c.fillStyle = lin(c, 0, S * 0.55, 0, S, [[0, '#4d8db2'], [0.45, '#2f6f93'], [1, '#1d4c67']]);
+        c.fillRect(0, S * 0.55, S, S * 0.45);
+        c.fillStyle = 'rgba(255,255,255,0.25)';
+        c.fillRect(0, S * 0.548, S, 3);
+        for (let i = 0; i < 260; i++) {
+          const y = S * 0.56 + Math.pow(rng(), 1.6) * S * 0.44;
+          const d = (y - S * 0.55) / (S * 0.45);
+          c.strokeStyle = `rgba(255,255,255,${0.08 + rng() * 0.3})`;
+          c.lineWidth = 0.6 + d * 2.2;
+          const x = rng() * S, l = 4 + d * 30 * rng();
+          c.beginPath(); c.moveTo(x, y); c.lineTo(x + l, y + (rng() - 0.5)); c.stroke();
+        }
+        const drawSign = () => {
+          if (!o.sign) return;
+          c.fillStyle = '#5a4634'; c.fillRect(S * 0.1, S * 0.5, 10, S * 0.5); c.fillRect(S * 0.42, S * 0.5, 10, S * 0.5);
+          shadowed(c, 10, 4, 0.35, () => { c.fillStyle = '#1f5fa8'; c.fillRect(S * 0.06, S * 0.42, S * 0.42, 92); });
+          c.strokeStyle = '#ffffff'; c.lineWidth = 3; c.strokeRect(S * 0.06 + 6, S * 0.42 + 6, S * 0.42 - 12, 80);
+          c.fillStyle = '#ffffff'; c.textAlign = 'center';
+          c.font = 'bold 34px "Noto Sans JP", sans-serif'; c.fillText(String(o.sign), S * 0.27, S * 0.42 + 50);
+          c.font = '11px "Noto Sans JP", sans-serif'; c.fillText(String(o.signEn || ''), S * 0.27, S * 0.42 + 74);
+          c.fillStyle = 'rgba(255,255,255,0.12)'; c.fillRect(S * 0.06, S * 0.42, S * 0.42, 20);
+        };
+        if (o.beach !== false) {
+          c.fillStyle = lin(c, 0, S * 0.84, 0, S, [[0, '#d9c8a6'], [1, '#bfa77f']]);
+          c.beginPath(); c.moveTo(0, S * 0.86);
+          for (let x = 0; x <= S; x += 20) c.lineTo(x, S * 0.85 + Math.sin(x / 50) * 6);
+          c.lineTo(S, S); c.lineTo(0, S); c.closePath(); c.fill();
+          c.strokeStyle = 'rgba(255,255,255,0.7)'; c.lineWidth = 3;
+          c.beginPath();
+          for (let x = 0; x <= S; x += 10) c.lineTo(x, S * 0.85 + Math.sin(x / 50) * 6 - 2 + Math.sin(x / 7) * 1.5);
+          c.stroke();
+        }
+        drawSign();
+      },
+
+      lighthouse(c, rng) {
+        sky(c, '#2a2b5c', '#ffd08a', S * 0.62);
+        c.fillStyle = lin(c, 0, 0, 0, S * 0.62, [[0, '#2a2b5c'], [0.45, '#b85a7c'], [0.75, '#f29a5c'], [1, '#ffd28c']]);
+        c.fillRect(0, 0, S, S * 0.62);
+        glow(c, S * 0.68, S * 0.6, 200, [255, 190, 120], 0.6);
+        c.fillStyle = '#ffe9b8'; c.beginPath(); c.arc(S * 0.68, S * 0.6, 24, 0, Math.PI * 2); c.fill();
+        c.fillStyle = lin(c, 0, S * 0.62, 0, S, [[0, '#6a4160'], [1, '#1b1931']]);
+        c.fillRect(0, S * 0.62, S, S * 0.38);
+        for (let y = S * 0.63; y < S; y += 3) {
+          const d = (y - S * 0.62) / (S * 0.38);
+          c.strokeStyle = `rgba(255,190,120,${0.5 * (1 - d) * rng()})`;
+          c.lineWidth = 1.5;
+          const w = 20 + d * 120 * rng();
+          c.beginPath(); c.moveTo(S * 0.68 - w / 2, y); c.lineTo(S * 0.68 + w / 2, y); c.stroke();
+        }
+        c.fillStyle = '#15122a';
+        c.beginPath(); c.moveTo(0, S * 0.56); c.quadraticCurveTo(S * 0.2, S * 0.55, S * 0.42, S * 0.66);
+        c.lineTo(S * 0.5, S); c.lineTo(0, S); c.closePath(); c.fill();
+        const bx = S * 0.17, by = S * 0.56;
+        c.fillStyle = 'rgba(255,235,170,0.10)';
+        c.beginPath(); c.moveTo(bx, by - 128); c.lineTo(S, by - 200); c.lineTo(S, by - 90); c.closePath(); c.fill();
+        c.fillStyle = lin(c, bx - 18, 0, bx + 18, 0, [[0, '#f1ebee'], [1, '#9e93ab']]);
+        c.beginPath(); c.moveTo(bx - 19, by); c.lineTo(bx - 12, by - 112); c.lineTo(bx + 12, by - 112); c.lineTo(bx + 19, by); c.closePath(); c.fill();
+        c.fillStyle = '#2b2236'; c.fillRect(bx - 15, by - 130, 30, 18);
+        glow(c, bx, by - 122, 34, [255, 230, 160], 0.9);
+        c.fillStyle = '#ffeab0'; c.fillRect(bx - 9, by - 128, 18, 12);
+        c.fillStyle = '#2b2236'; c.beginPath(); c.moveTo(bx - 17, by - 130); c.lineTo(bx, by - 146); c.lineTo(bx + 17, by - 130); c.closePath(); c.fill();
+      },
+
+      letter(c, rng) {
+        c.fillStyle = '#86593b'; c.fillRect(0, 0, S, S);
+        for (let i = 0; i < 70; i++) {
+          const y = rng() * S;
+          c.strokeStyle = rng() < 0.5 ? `rgba(40,20,10,${0.08 + rng() * 0.12})` : `rgba(255,220,180,${0.05 + rng() * 0.08})`;
+          c.lineWidth = 1 + rng() * 3;
+          c.beginPath(); c.moveTo(0, y);
+          c.bezierCurveTo(S * 0.3, y + (rng() - 0.5) * 20, S * 0.7, y + (rng() - 0.5) * 20, S, y + (rng() - 0.5) * 14);
+          c.stroke();
+        }
+        glow(c, S * 0.2, S * 0.1, 420, [255, 225, 180], 0.35);
+        c.save();
+        c.translate(S * 0.5, S * 0.52); c.rotate(-0.12);
+        shadowed(c, 28, 12, 0.45, () => { c.fillStyle = '#f2ede3'; c.fillRect(-160, -105, 320, 210); });
+        c.strokeStyle = 'rgba(0,0,0,0.10)'; c.lineWidth = 1.5;
+        c.beginPath(); c.moveTo(-160, -105); c.lineTo(0, 15); c.lineTo(160, -105); c.stroke();
+        c.strokeStyle = 'rgba(40,50,80,0.55)'; c.lineWidth = 2;
+        for (let l = 0; l < 3; l++) {
+          c.beginPath();
+          let x = -70, y = 30 + l * 22;
+          c.moveTo(x, y);
+          while (x < 40 + rng() * 50) { x += 4 + rng() * 6; c.lineTo(x, y + (rng() - 0.5) * 6); }
+          c.stroke();
+        }
+        c.restore();
+        c.save(); c.translate(S * 0.78, S * 0.85); c.rotate(-0.7);
+        shadowed(c, 8, 4, 0.4, () => { c.fillStyle = '#1f2430'; c.fillRect(-90, -5, 180, 10); });
+        c.fillStyle = '#c9a74a'; c.fillRect(60, -5, 12, 10);
+        c.restore();
+      },
+
+      city(c, rng, o) {
+        const night = !!o.night;
+        sky(c, night ? '#0e1430' : '#8ea5c3', night ? '#3a3256' : '#ecd5c2', S);
+        for (let i = 0; i < 16; i++) {
+          const w = 30 + rng() * 60, h = 80 + rng() * 200, x = rng() * S;
+          c.fillStyle = night ? 'rgba(40,44,70,0.9)' : 'rgba(110,125,150,0.55)';
+          c.fillRect(x, S * 0.78 - h, w, h);
+        }
+        for (let i = 0; i < 9; i++) {
+          const w = 50 + rng() * 80, h = 120 + rng() * 220, x = i * 62 - 20 + rng() * 20;
+          c.fillStyle = night ? '#151827' : '#3a4150';
+          c.fillRect(x, S * 0.86 - h, w, h);
+          for (let yy = S * 0.86 - h + 10; yy < S * 0.84; yy += 16) {
+            for (let xx = x + 6; xx < x + w - 8; xx += 12) {
+              if (rng() < (night ? 0.45 : 0.18)) {
+                c.fillStyle = night ? `rgba(255,${200 + rng() * 40},${120 + rng() * 60},0.9)` : 'rgba(255,240,210,0.5)';
+                c.fillRect(xx, yy, 6, 8);
+              }
+            }
+          }
+        }
+        if (night) {
+          for (let i = 0; i < 70; i++) {
+            const pal = [[255, 214, 140], [255, 150, 170], [170, 210, 255], [255, 255, 230]];
+            glow(c, rng() * S, S * 0.55 + rng() * S * 0.45, 10 + rng() * 34, pal[Math.floor(rng() * pal.length)], 0.35 + rng() * 0.35);
+          }
+        }
+        c.fillStyle = night ? '#07080f' : '#2b2f38'; c.fillRect(0, S * 0.86, S, S * 0.14);
+        c.strokeStyle = night ? 'rgba(0,0,0,0.8)' : 'rgba(20,20,25,0.75)'; c.lineWidth = 1.6;
+        for (let k = 0; k < 3; k++) {
+          c.beginPath(); c.moveTo(0, S * (0.12 + k * 0.05));
+          c.quadraticCurveTo(S * 0.5, S * (0.2 + k * 0.05), S, S * (0.1 + k * 0.05)); c.stroke();
+        }
+        c.fillStyle = night ? '#05060b' : '#25282f'; c.fillRect(S * 0.86, 0, 12, S * 0.86);
+        c.fillRect(S * 0.8, S * 0.11, 80, 5);
+      },
+
+      coffee(c, rng, o) {
+        const white = o.table === 'white';
+        c.fillStyle = white ? '#ecebe7' : '#c59c74'; c.fillRect(0, 0, S, S);
+        if (!white) {
+          for (let i = 0; i < 40; i++) {
+            const y = rng() * S; c.strokeStyle = `rgba(90,55,25,${0.06 + rng() * 0.1})`; c.lineWidth = 1 + rng() * 2;
+            c.beginPath(); c.moveTo(0, y); c.bezierCurveTo(S * 0.3, y + 8, S * 0.6, y - 8, S, y + 4); c.stroke();
+          }
+        }
+        glow(c, S * 0.15, S * 0.1, 400, [255, 240, 215], 0.45);
+        c.save(); c.translate(S * 0.3, S * 0.68); c.rotate(0.18);
+        shadowed(c, 18, 8, 0.25, () => { c.fillStyle = '#fbfbf8'; c.fillRect(-150, -120, 260, 220); });
+        c.strokeStyle = 'rgba(80,120,190,0.35)'; c.lineWidth = 1;
+        for (let y = -95; y < 95; y += 16) { c.beginPath(); c.moveTo(-140, y); c.lineTo(100, y); c.stroke(); }
+        c.strokeStyle = 'rgba(30,30,40,0.6)'; c.lineWidth = 1.6;
+        for (let l = 0; l < 5; l++) {
+          c.beginPath(); let x = -125; const y = -88 + l * 16; c.moveTo(x, y);
+          while (x < -20 + rng() * 110) { x += 3 + rng() * 5; c.lineTo(x, y - 4 + rng() * 6); }
+          c.stroke();
+        }
+        c.restore();
+        c.save(); c.translate(S * 0.62, S * 0.86); c.rotate(-0.9);
+        shadowed(c, 6, 3, 0.35, () => { c.fillStyle = '#26303f'; c.fillRect(-70, -4, 140, 8); });
+        c.restore();
+        const cx = S * 0.66, cy = S * 0.36;
+        shadowed(c, 30, 12, 0.3, () => { c.fillStyle = '#f6f5f2'; c.beginPath(); c.arc(cx, cy, 128, 0, Math.PI * 2); c.fill(); });
+        c.strokeStyle = 'rgba(0,0,0,0.06)'; c.lineWidth = 3; c.beginPath(); c.arc(cx, cy, 100, 0, Math.PI * 2); c.stroke();
+        shadowed(c, 12, 6, 0.25, () => {
+          c.fillStyle = '#fdfdfb'; c.beginPath(); c.arc(cx, cy, 86, 0, Math.PI * 2); c.fill();
+          c.beginPath(); c.roundRect ? c.roundRect(cx + 78, cy - 16, 46, 32, 14) : c.rect(cx + 78, cy - 16, 46, 32); c.fill();
+        });
+        const g = c.createRadialGradient(cx - 10, cy - 10, 5, cx, cy, 74);
+        g.addColorStop(0, '#8a5a35'); g.addColorStop(0.75, '#5a3720'); g.addColorStop(1, '#3a2213');
+        c.fillStyle = g; c.beginPath(); c.arc(cx, cy, 72, 0, Math.PI * 2); c.fill();
+        c.fillStyle = '#ecd8bb';
+        c.beginPath(); c.arc(cx - 16, cy - 10, 22, 0, Math.PI * 2); c.arc(cx + 16, cy - 10, 22, 0, Math.PI * 2); c.fill();
+        c.beginPath(); c.moveTo(cx - 37, cy - 2); c.lineTo(cx, cy + 40); c.lineTo(cx + 37, cy - 2); c.closePath(); c.fill();
+        c.fillStyle = 'rgba(255,255,255,0.35)'; c.beginPath(); c.ellipse(cx - 40, cy - 46, 18, 6, -0.7, 0, Math.PI * 2); c.fill();
+      },
+
+      sakura(c, rng) {
+        sky(c, '#5aa3e6', '#d5e9f8', S);
+        glow(c, S * 0.85, S * 0.08, 260, [255, 255, 245], 0.7);
+        const branch = (x, y, ang, len, w, depth) => {
+          const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
+          c.strokeStyle = '#3a2823'; c.lineWidth = w; c.lineCap = 'round';
+          c.beginPath(); c.moveTo(x, y);
+          c.quadraticCurveTo((x + x2) / 2 + (rng() - 0.5) * 30, (y + y2) / 2 + (rng() - 0.5) * 30, x2, y2); c.stroke();
+          if (depth <= 0 || w < 1.5) {
+            for (let k = 0; k < 10 + rng() * 10; k++) blossom(c, x2 + (rng() - 0.5) * 60, y2 + (rng() - 0.5) * 50, 6 + rng() * 6, rng);
+            return;
+          }
+          for (let k = 0; k < 2; k++) branch(x2, y2, ang + (rng() - 0.5) * 1.2, len * (0.6 + rng() * 0.2), w * 0.62, depth - 1);
+          if (rng() < 0.6) for (let k = 0; k < 6; k++) blossom(c, x2 + (rng() - 0.5) * 40, y2 + (rng() - 0.5) * 40, 6 + rng() * 5, rng);
+        };
+        branch(S + 10, S * 0.18, Math.PI * 1.02, 170, 22, 4);
+        branch(S + 10, S * 0.7, Math.PI * 1.15, 140, 16, 3);
+        for (let i = 0; i < 10; i++) glow(c, rng() * S, rng() * S, 30 + rng() * 50, [250, 200, 215], 0.35);
+      },
+
+      black(c) { c.fillStyle = '#0b0b0c'; c.fillRect(0, 0, S, S); },
+
+      libcard(c, rng) {
+        c.fillStyle = '#7c5538'; c.fillRect(0, 0, S, S);
+        for (let i = 0; i < 50; i++) { const y = rng() * S; c.strokeStyle = `rgba(40,20,10,${0.08 + rng() * 0.12})`; c.lineWidth = 1 + rng() * 2; c.beginPath(); c.moveTo(0, y); c.bezierCurveTo(S * 0.3, y + 10, S * 0.7, y - 10, S, y + 5); c.stroke(); }
+        glow(c, S * 0.2, S * 0.1, 420, [255, 230, 190], 0.4);
+        shadowed(c, 14, 6, 0.35, () => { c.fillStyle = '#3d5a45'; c.fillRect(S * 0.62, S * 0.04, 190, 260); });
+        c.fillStyle = '#c9b78f'; c.fillRect(S * 0.62 + 178, S * 0.04, 12, 260);
+        c.save(); c.translate(S * 0.46, S * 0.58); c.rotate(-0.08);
+        shadowed(c, 22, 10, 0.45, () => { c.fillStyle = '#fbfaf5'; c.fillRect(-200, -125, 400, 250); });
+        c.fillStyle = '#2f6b3f'; c.fillRect(-200, -125, 400, 62);
+        c.fillStyle = '#ffffff'; c.font = 'bold 30px "Noto Sans JP", sans-serif'; c.textAlign = 'left';
+        c.fillText('花園市立図書館', -180, -82);
+        c.fillStyle = '#24262b'; c.font = 'bold 22px "Noto Sans JP", sans-serif'; c.fillText('利用者カード', -180, -28);
+        c.font = '15px "Noto Sans JP", sans-serif'; c.fillStyle = '#555';
+        c.fillText('氏名', -180, 10); c.fillText('発行', -180, 44);
+        c.strokeStyle = '#999'; c.lineWidth = 1; c.beginPath(); c.moveTo(-140, 14); c.lineTo(60, 14); c.moveTo(-140, 48); c.lineTo(60, 48); c.stroke();
+        c.fillStyle = '#1d2a55'; c.font = '24px "Zen Old Mincho", serif'; c.fillText('松下 翔太', -130, 8);
+        c.font = '17px "Zen Old Mincho", serif'; c.fillText('2019年4月', -130, 42);
+        let bx = -180;
+        while (bx < 40) { const w = 1 + Math.floor(rng() * 4); c.fillStyle = '#111'; c.fillRect(bx, 66, w, 40); bx += w + 1 + Math.floor(rng() * 3); }
+        c.font = '12px monospace'; c.fillStyle = '#333'; c.fillText('0219-1127-08', -180, 118);
+        c.save(); c.translate(130, 40); c.rotate(-0.25);
+        c.strokeStyle = 'rgba(200,40,40,0.8)'; c.lineWidth = 3; c.beginPath(); c.arc(0, 0, 48, 0, Math.PI * 2); c.stroke();
+        c.lineWidth = 1.5; c.beginPath(); c.arc(0, 0, 41, 0, Math.PI * 2); c.stroke();
+        c.fillStyle = 'rgba(200,40,40,0.85)'; c.font = 'bold 15px "Noto Sans JP", sans-serif'; c.textAlign = 'center';
+        c.fillText('ボランティア', 0, -4); c.font = 'bold 12px "Noto Sans JP", sans-serif'; c.fillText('中学生', 0, 16);
+        c.restore();
+        c.restore();
+      },
+
+      noren(c, rng) {
+        c.fillStyle = lin(c, 0, 0, 0, S, [[0, '#2a1d17'], [1, '#14100d']]); c.fillRect(0, 0, S, S);
+        for (let x = 0; x < S; x += 36) { c.fillStyle = `rgba(90,60,40,${0.25 + rng() * 0.2})`; c.fillRect(x, 0, 30, S * 0.8); }
+        glow(c, S * 0.5, S * 0.55, 300, [255, 200, 130], 0.35);
+        c.fillStyle = '#e8d7b5'; c.fillRect(S * 0.16, S * 0.22, S * 0.68, S * 0.62);
+        for (let k = 0; k < 4; k++) { c.fillStyle = 'rgba(80,60,40,0.5)'; c.fillRect(S * 0.16 + k * S * 0.17, S * 0.22, 3, S * 0.62); }
+        c.fillStyle = '#3b2a1e'; c.fillRect(S * 0.08, S * 0.12, S * 0.84, 18);
+        const nx = S * 0.12, nw = S * 0.76, ny = S * 0.15, nh = S * 0.34;
+        for (let k = 0; k < 3; k++) {
+          const px = nx + k * (nw / 3) + 3;
+          c.fillStyle = lin(c, px, ny, px, ny + nh, [[0, '#1f2f52'], [1, '#162443']]);
+          c.beginPath(); c.moveTo(px, ny); c.lineTo(px + nw / 3 - 6, ny); c.lineTo(px + nw / 3 - 6, ny + nh + (rng() - 0.5) * 6); c.lineTo(px, ny + nh); c.closePath(); c.fill();
+        }
+        c.fillStyle = '#f4efe4'; c.font = 'bold 74px "Zen Old Mincho", serif'; c.textAlign = 'center';
+        c.fillText('ゆずりは', S * 0.5, ny + nh * 0.62);
+        c.font = '16px "Zen Old Mincho", serif'; c.fillText('創業七十年', S * 0.5, ny + nh * 0.88);
+        const lx = S * 0.08, ly = S * 0.62;
+        glow(c, lx + 30, ly, 120, [255, 190, 110], 0.7);
+        c.fillStyle = lin(c, lx, 0, lx + 60, 0, [[0, '#e7a94f'], [0.5, '#ffd99a'], [1, '#d58f3b']]);
+        c.beginPath(); c.ellipse(lx + 30, ly, 32, 72, 0, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = 'rgba(120,60,20,0.4)'; c.lineWidth = 1.5;
+        for (let y = -60; y <= 60; y += 12) { c.beginPath(); c.ellipse(lx + 30, ly + y, 31 * Math.cos(y / 75), 3, 0, 0, Math.PI * 2); c.stroke(); }
+        c.fillStyle = '#2a1a12'; c.fillRect(lx + 8, ly - 78, 44, 10); c.fillRect(lx + 8, ly + 68, 44, 10);
+        c.fillStyle = '#7a1f1f'; c.font = 'bold 20px "Zen Old Mincho", serif'; c.textAlign = 'center';
+        [...'湯ノ花温泉'].forEach((ch, i) => c.fillText(ch, lx + 30, ly - 40 + i * 22));
+        c.fillStyle = '#4a4340'; c.fillRect(0, S * 0.84, S, S * 0.16);
+        for (let i = 0; i < 9; i++) { c.fillStyle = `rgba(120,115,110,${0.4 + rng() * 0.3})`; c.beginPath(); c.ellipse(40 + i * 60 + rng() * 10, S * 0.92, 26, 9, 0, 0, Math.PI * 2); c.fill(); }
+      },
+
+      shutter(c, rng) {
+        sky(c, '#9fb3c8', '#d9dfe4', S * 0.2);
+        c.fillStyle = '#c9c6bf'; c.fillRect(0, S * 0.1, S, S * 0.9);
+        shadowed(c, 8, 4, 0.3, () => { c.fillStyle = '#f7f7f4'; c.fillRect(S * 0.08, S * 0.14, S * 0.84, 82); });
+        c.strokeStyle = '#2a4f8a'; c.lineWidth = 3; c.strokeRect(S * 0.08 + 6, S * 0.14 + 6, S * 0.84 - 12, 70);
+        c.fillStyle = '#1f4486'; c.textAlign = 'center';
+        c.font = 'bold 18px "Noto Sans JP", sans-serif'; c.fillText('有限会社', S * 0.5, S * 0.14 + 30);
+        c.font = 'bold 36px "Noto Sans JP", sans-serif'; c.fillText('空見製作所', S * 0.5, S * 0.14 + 68);
+        for (let i = 0; i < 12; i++) { c.fillStyle = `rgba(150,90,40,${rng() * 0.25})`; c.beginPath(); c.arc(S * (0.1 + rng() * 0.8), S * 0.14 + rng() * 82, 2 + rng() * 6, 0, Math.PI * 2); c.fill(); }
+        const top = S * 0.34;
+        for (let y = top; y < S * 0.92; y += 12) {
+          c.fillStyle = lin(c, 0, y, 0, y + 12, [[0, '#a4a7ab'], [0.5, '#c8cace'], [1, '#86898e']]);
+          c.fillRect(S * 0.06, y, S * 0.88, 12);
+        }
+        c.fillStyle = '#6b6e73'; c.fillRect(S * 0.06, top - 10, S * 0.88, 10);
+        c.save(); c.translate(S * 0.5, S * 0.6); c.rotate(0.03);
+        shadowed(c, 6, 3, 0.25, () => { c.fillStyle = '#fffdf6'; c.fillRect(-130, -80, 260, 170); });
+        c.fillStyle = 'rgba(220,220,200,0.8)'; c.fillRect(-140, -86, 40, 14); c.fillRect(100, -86, 40, 14);
+        c.fillStyle = '#222'; c.font = '22px "Zen Old Mincho", serif'; c.textAlign = 'center';
+        c.fillText('長い間', 0, -38); c.fillText('ありがとうございました', 0, -6);
+        c.font = '15px "Zen Old Mincho", serif'; c.fillText('令和七年二月末日をもちまして', 0, 30); c.fillText('閉業いたしました', 0, 52);
+        c.restore();
+        c.fillStyle = '#5a5650'; c.fillRect(0, S * 0.92, S, S * 0.08);
+        for (let i = 0; i < 20; i++) { c.fillStyle = '#4f7a3a'; c.fillRect(rng() * S, S * 0.9 + rng() * 10, 2, 8 + rng() * 10); }
+      },
+
+      capball(c, rng) {
+        c.fillStyle = lin(c, 0, 0, 0, S, [[0, '#d9d2c4'], [1, '#a99c84']]); c.fillRect(0, 0, S, S);
+        glow(c, S * 0.8, S * 0.12, 380, [255, 245, 220], 0.6);
+        c.fillStyle = '#8a7356'; c.fillRect(0, S * 0.78, S, S * 0.22);
+        const cx = S * 0.38, cy = S * 0.5;
+        shadowed(c, 24, 12, 0.35, () => {
+          c.fillStyle = '#1d2b4c';
+          c.beginPath(); c.ellipse(cx + 40, cy + 150, 170, 40, -0.05, 0, Math.PI * 2); c.fill();
+          c.beginPath(); c.moveTo(cx - 150, cy + 130); c.bezierCurveTo(cx - 150, cy - 110, cx + 150, cy - 110, cx + 150, cy + 130); c.closePath(); c.fill();
+        });
+        c.strokeStyle = 'rgba(255,255,255,0.08)'; c.lineWidth = 2;
+        c.beginPath(); c.moveTo(cx, cy - 50); c.lineTo(cx, cy + 130); c.stroke();
+        c.fillStyle = '#26365c'; c.beginPath(); c.arc(cx, cy - 52, 9, 0, Math.PI * 2); c.fill();
+        c.fillStyle = '#f2f2f2'; c.font = 'bold 72px "Zen Old Mincho", serif'; c.textAlign = 'center';
+        c.fillText('青嵐', cx, cy + 62);
+        c.strokeStyle = 'rgba(0,0,0,0.25)'; c.lineWidth = 1; c.strokeText('青嵐', cx, cy + 62);
+        const bx = S * 0.76, by = S * 0.7;
+        shadowed(c, 14, 8, 0.35, () => { c.fillStyle = '#f4f1ea'; c.beginPath(); c.arc(bx, by, 88, 0, Math.PI * 2); c.fill(); });
+        c.strokeStyle = '#c2372f'; c.lineWidth = 3;
+        c.beginPath(); c.arc(bx - 150, by, 96, -0.62, 0.62); c.stroke();
+        c.beginPath(); c.arc(bx + 150, by, 96, Math.PI - 0.62, Math.PI + 0.62); c.stroke();
+        c.fillStyle = '#1a1a1a'; c.font = 'bold 21px "Zen Old Mincho", serif';
+        c.save(); c.translate(bx, by); c.rotate(-0.15);
+        c.fillText('最後まで', 0, -18); c.fillText('声出せ！', 0, 10);
+        c.font = '12px "Zen Old Mincho", serif'; c.fillText('主将 春日　2022.7', 0, 38);
+        c.font = '10px "Zen Old Mincho", serif'; c.fillText('二年一同', -40, -46);
+        c.restore();
+      },
+
+      stage(c, rng, o) {
+        c.fillStyle = '#09070b'; c.fillRect(0, 0, S, S);
+        if (o.banner) {
+          c.fillStyle = lin(c, 0, 26, 0, 120, [[0, '#5a1420'], [1, '#3a0b14']]); c.fillRect(S * 0.04, 26, S * 0.92, 94);
+          c.fillStyle = '#c9a548'; c.fillRect(S * 0.04, 26, S * 0.92, 3); c.fillRect(S * 0.04, 117, S * 0.92, 3);
+          c.fillStyle = '#ecd28a'; c.textAlign = 'center';
+          c.font = 'bold 32px "Zen Old Mincho", serif'; c.fillText(String(o.banner[0] || ''), S * 0.5, 68);
+          c.font = 'bold 22px "Zen Old Mincho", serif'; c.fillText(String(o.banner[1] || ''), S * 0.5, 104);
+        }
+        c.fillStyle = lin(c, 0, S * 0.72, 0, S, [[0, '#2c2128'], [1, '#0c0a0c']]); c.fillRect(0, S * 0.72, S, S * 0.28);
+        c.fillStyle = lin(c, 0, 0, 0, S * 0.8, [[0, 'rgba(255,240,215,0.38)'], [1, 'rgba(255,240,215,0.05)']]);
+        c.beginPath(); c.moveTo(S * 0.44, 0); c.lineTo(S * 0.56, 0); c.lineTo(S * 0.78, S * 0.82); c.lineTo(S * 0.22, S * 0.82); c.closePath(); c.fill();
+        c.save(); c.scale(1, 0.25); glow(c, S * 0.5, S * 0.82 * 4, 190, [255, 235, 200], 0.55); c.restore();
+        for (let i = 0; i < 90; i++) { c.fillStyle = `rgba(255,245,225,${rng() * 0.5})`; const y = rng() * S * 0.8; const spread = 0.06 + (y / S) * 0.3; c.fillRect(S * (0.5 + (rng() - 0.5) * spread * 2), y, 1.5, 1.5); }
+        c.strokeStyle = '#141014'; c.lineWidth = 4;
+        c.beginPath(); c.moveTo(S * 0.5, S * 0.8); c.lineTo(S * 0.5, S * 0.56); c.stroke();
+        c.beginPath(); c.moveTo(S * 0.44, S * 0.83); c.lineTo(S * 0.5, S * 0.8); c.lineTo(S * 0.56, S * 0.83); c.stroke();
+        c.save(); c.translate(S * 0.5, S * 0.53); c.rotate(-0.05);
+        c.fillStyle = '#1b161b'; c.fillRect(-62, -34, 124, 60);
+        c.fillStyle = '#f2ece0'; c.fillRect(-56, -30, 54, 52); c.fillRect(2, -30, 54, 52);
+        c.strokeStyle = 'rgba(0,0,0,0.35)'; c.lineWidth = 1;
+        for (let y = -24; y < 18; y += 7) { c.beginPath(); c.moveTo(-52, y); c.lineTo(-6, y); c.moveTo(6, y); c.lineTo(52, y); c.stroke(); }
+        c.restore();
+        c.strokeStyle = '#d9d9dc'; c.lineWidth = 3; c.beginPath(); c.moveTo(S * 0.38, S * 0.66); c.lineTo(S * 0.64, S * 0.6); c.stroke();
+        for (let i = 0; i < 9; i++) { c.fillStyle = 'rgba(20,16,20,0.95)'; c.beginPath(); c.arc(30 + i * 62, S * 0.96, 34, Math.PI, 0); c.fill(); }
+      },
+
+      sunset2(c, rng) {
+        c.fillStyle = lin(c, 0, 0, 0, S * 0.7, [[0, '#4a4f8f'], [0.5, '#e98a6a'], [1, '#ffd79a']]); c.fillRect(0, 0, S, S * 0.7);
+        for (let i = 0; i < 3; i++) cloud(c, rng, rng() * S, S * (0.15 + rng() * 0.25), 200, 0.18);
+        glow(c, S * 0.55, S * 0.66, 220, [255, 200, 130], 0.55);
+        c.fillStyle = '#fff0c4'; c.beginPath(); c.arc(S * 0.55, S * 0.66, 30, 0, Math.PI * 2); c.fill();
+        c.fillStyle = lin(c, 0, S * 0.68, 0, S, [[0, '#7b4e57'], [1, '#2a1c24']]); c.fillRect(0, S * 0.68, S, S * 0.32);
+        c.fillStyle = 'rgba(255,200,140,0.35)'; c.fillRect(S * 0.45, S * 0.69, S * 0.2, 2);
+        c.fillStyle = '#140e12'; c.fillRect(0, S * 0.84, S, S * 0.16);
+        const person = (x, lean) => {
+          c.save(); c.translate(x, S * 0.84); c.rotate(lean);
+          c.beginPath(); c.moveTo(-20, 0); c.quadraticCurveTo(-24, -50, -10, -70); c.lineTo(10, -70); c.quadraticCurveTo(24, -50, 20, 0); c.closePath(); c.fill();
+          c.beginPath(); c.arc(0, -86, 15, 0, Math.PI * 2); c.fill();
+          c.restore();
+        };
+        person(S * 0.42, 0.06); person(S * 0.5, -0.1);
+      },
+
+      school(c, rng, o) {
+        sky(c, '#6aaee8', '#dbecf8', S * 0.8);
+        for (let i = 0; i < 3; i++) cloud(c, rng, rng() * S, S * (0.06 + rng() * 0.15), 170, 0.45);
+        const top = S * 0.3;
+        c.fillStyle = '#e7dfcf'; c.fillRect(-10, top, S + 20, S * 0.5);
+        c.fillStyle = 'rgba(0,0,0,0.08)'; c.fillRect(-10, top, S + 20, 8);
+        c.fillStyle = '#d8cfbd'; c.fillRect(S * 0.42, top - 40, S * 0.16, 44);
+        c.fillStyle = '#f7f4ec'; c.beginPath(); c.arc(S * 0.5, top - 18, 15, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = '#333'; c.lineWidth = 2; c.beginPath(); c.moveTo(S * 0.5, top - 18); c.lineTo(S * 0.5, top - 28); c.moveTo(S * 0.5, top - 18); c.lineTo(S * 0.5 + 7, top - 15); c.stroke();
+        for (let r = 0; r < 4; r++) for (let k = 0; k < 9; k++) {
+          const x = 14 + k * 60, y = top + 22 + r * 52;
+          c.fillStyle = lin(c, x, y, x + 40, y + 34, [[0, '#9db5c6'], [0.5, '#6f8799'], [1, '#c9d8e2']]);
+          c.fillRect(x, y, 40, 32);
+          c.fillStyle = 'rgba(255,255,255,0.5)'; c.fillRect(x + 19, y, 2, 32);
+        }
+        c.fillStyle = lin(c, 0, S * 0.8, 0, S, [[0, '#bcaa8a'], [1, '#a18e6e']]); c.fillRect(0, S * 0.8, S, S * 0.2);
+        const tx = S * 0.2;
+        if (o.tree === 'stump') {
+          c.fillStyle = '#5b4232'; c.fillRect(tx - 26, S * 0.83, 52, 34);
+          c.fillStyle = '#c8a27a'; c.beginPath(); c.ellipse(tx, S * 0.83, 26, 8, 0, 0, Math.PI * 2); c.fill();
+          c.strokeStyle = 'rgba(90,60,40,0.6)'; c.lineWidth = 1;
+          for (let k = 1; k < 4; k++) { c.beginPath(); c.ellipse(tx, S * 0.83, k * 7, k * 2.2, 0, 0, Math.PI * 2); c.stroke(); }
+        } else if (o.tree !== false) {
+          c.fillStyle = '#4a352b'; c.fillRect(tx - 10, S * 0.5, 20, S * 0.38);
+          for (let k = 0; k < 140; k++) blossom(c, tx + (rng() - 0.5) * 230, S * (0.3 + rng() * 0.28), 6 + rng() * 6, rng);
+        }
+        if (o.gate) {
+          c.fillStyle = lin(c, S * 0.78, 0, S, 0, [[0, '#b9b6ae'], [1, '#8e8b84']]); c.fillRect(S * 0.78, S * 0.28, S * 0.22, S * 0.72);
+          c.fillStyle = 'rgba(0,0,0,0.15)'; c.fillRect(S * 0.78, S * 0.28, 6, S * 0.72);
+          c.fillStyle = '#8f8a80'; c.fillRect(S * 0.76, S * 0.25, S * 0.26, 22);
+          shadowed(c, 4, 2, 0.4, () => { c.fillStyle = '#5b4a2c'; c.fillRect(S * 0.82, S * 0.34, S * 0.12, S * 0.56); });
+          c.fillStyle = '#e8dcb6'; c.font = 'bold 26px "Zen Old Mincho", serif'; c.textAlign = 'center';
+          [...String(o.gate)].forEach((ch, i) => c.fillText(ch, S * 0.88, S * 0.34 + 34 + i * 30));
+        }
+        if (o.sign) {
+          c.save(); c.translate(S * 0.8, S * 0.62);
+          shadowed(c, 10, 4, 0.3, () => { c.fillStyle = '#fbfaf6'; c.fillRect(-36, -10, 72, 170); });
+          c.strokeStyle = '#555'; c.lineWidth = 2; c.strokeRect(-36, -10, 72, 170);
+          c.fillStyle = '#111'; c.font = 'bold 34px "Zen Old Mincho", serif'; c.textAlign = 'center';
+          [...String(o.sign)].forEach((ch, i) => c.fillText(ch, 0, 32 + i * 42));
+          c.restore();
+        }
+      },
+
+      rain(c, rng) {
+        c.fillStyle = lin(c, 0, 0, 0, S, [[0, '#1b2333'], [1, '#2a2d3a']]); c.fillRect(0, 0, S, S);
+        const pal = [[255, 196, 120], [255, 110, 110], [235, 240, 255], [120, 220, 210], [255, 230, 160]];
+        for (let i = 0; i < 46; i++) glow(c, rng() * S, S * 0.35 + rng() * S * 0.65, 18 + rng() * 50, pal[Math.floor(rng() * pal.length)], 0.25 + rng() * 0.35);
+        c.fillStyle = 'rgba(200,210,225,0.08)'; c.fillRect(0, 0, S, S);
+        for (let i = 0; i < 30; i++) {
+          c.strokeStyle = `rgba(230,240,255,${0.08 + rng() * 0.12})`; c.lineWidth = 1 + rng() * 2;
+          let x = rng() * S, y = rng() * S * 0.5; c.beginPath(); c.moveTo(x, y);
+          for (let k = 0; k < 10; k++) { x += (rng() - 0.5) * 6; y += 14 + rng() * 14; c.lineTo(x, y); }
+          c.stroke();
+        }
+        for (let i = 0; i < 320; i++) {
+          const x = rng() * S, y = rng() * S, r = 0.8 + Math.pow(rng(), 2) * 5;
+          c.fillStyle = 'rgba(255,255,255,0.16)'; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+          c.fillStyle = 'rgba(255,255,255,0.55)'; c.beginPath(); c.arc(x - r * 0.3, y - r * 0.3, r * 0.3, 0, Math.PI * 2); c.fill();
+        }
+      },
+
+      autumn(c, rng) {
+        c.fillStyle = lin(c, 0, 0, 0, S, [[0, '#c88a45'], [0.6, '#8b5a32'], [1, '#4d3423']]); c.fillRect(0, 0, S, S);
+        const pal = [[255, 196, 90], [240, 140, 60], [255, 225, 150], [200, 90, 50]];
+        for (let i = 0; i < 60; i++) glow(c, rng() * S, rng() * S * 0.65, 20 + rng() * 60, pal[Math.floor(rng() * pal.length)], 0.3 + rng() * 0.3);
+        c.fillStyle = lin(c, 0, S * 0.68, 0, S, [[0, '#6f4a2e'], [1, '#3d2a1c']]);
+        c.beginPath(); c.moveTo(S * 0.42, S * 0.66); c.lineTo(S * 0.58, S * 0.66); c.lineTo(S * 0.95, S); c.lineTo(S * 0.05, S); c.closePath(); c.fill();
+        for (let i = 0; i < 160; i++) {
+          c.fillStyle = ['#d9622b', '#e8a23a', '#b8432a', '#f0c25a'][Math.floor(rng() * 4)];
+          c.beginPath(); c.ellipse(rng() * S, S * 0.7 + rng() * S * 0.3, 3 + rng() * 5, 2 + rng() * 3, rng() * 3, 0, Math.PI * 2); c.fill();
+        }
+        c.fillStyle = 'rgba(30,20,15,0.85)';
+        c.beginPath(); c.arc(S * 0.5, S * 0.56, 9, 0, Math.PI * 2); c.fill();
+        c.beginPath(); c.moveTo(S * 0.49 - 9, S * 0.68); c.quadraticCurveTo(S * 0.5, S * 0.56, S * 0.51 + 9, S * 0.68); c.closePath(); c.fill();
+      },
+
+      campus(c, rng) {
+        sky(c, '#86b9e3', '#e6f0f6', S * 0.55);
+        c.fillStyle = '#c9c1b2'; c.fillRect(S * 0.36, S * 0.36, S * 0.28, S * 0.2);
+        c.fillStyle = '#a99f8e'; for (let k = 0; k < 6; k++) c.fillRect(S * 0.38 + k * 26, S * 0.4, 14, 18);
+        c.fillStyle = lin(c, 0, S * 0.55, 0, S, [[0, '#d8cdb8'], [1, '#a99a7f']]);
+        c.beginPath(); c.moveTo(S * 0.44, S * 0.55); c.lineTo(S * 0.56, S * 0.55); c.lineTo(S * 0.9, S); c.lineTo(S * 0.1, S); c.closePath(); c.fill();
+        c.fillStyle = '#7d9a5a'; c.fillRect(0, S * 0.55, S * 0.44 - 1, S); c.fillRect(S * 0.56, S * 0.55, S, S);
+        c.fillStyle = lin(c, 0, S * 0.55, 0, S, [[0, '#6f8f4d'], [1, '#4f6e35']]);
+        c.beginPath(); c.moveTo(0, S * 0.55); c.lineTo(S * 0.44, S * 0.55); c.lineTo(S * 0.1, S); c.lineTo(0, S); c.fill();
+        c.beginPath(); c.moveTo(S, S * 0.55); c.lineTo(S * 0.56, S * 0.55); c.lineTo(S * 0.9, S); c.lineTo(S, S); c.fill();
+        [[-1], [1]].forEach(([side]) => {
+          for (let k = 0; k < 6; k++) {
+            const t = k / 5, x = S * 0.5 + side * (S * 0.12 + t * S * 0.42), y = S * 0.55 + t * S * 0.3, sc = 0.4 + t * 1.2;
+            c.fillStyle = '#4b3a2c'; c.fillRect(x - 3 * sc, y - 40 * sc, 6 * sc, 60 * sc);
+            for (let j = 0; j < 14; j++) glow(c, x + (rng() - 0.5) * 70 * sc, y - 60 * sc + (rng() - 0.5) * 50 * sc, 22 * sc, [70 + rng() * 40, 120 + rng() * 40, 60], 0.85);
+          }
+        });
+      },
+
+      ramen(c, rng) {
+        c.fillStyle = '#3b2618'; c.fillRect(0, 0, S, S);
+        for (let i = 0; i < 30; i++) { const y = rng() * S; c.strokeStyle = `rgba(0,0,0,${0.15 + rng() * 0.15})`; c.lineWidth = 2; c.beginPath(); c.moveTo(0, y); c.lineTo(S, y + (rng() - 0.5) * 20); c.stroke(); }
+        const cx = S * 0.5, cy = S * 0.5;
+        shadowed(c, 30, 14, 0.5, () => { c.fillStyle = '#1e1e22'; c.beginPath(); c.arc(cx, cy, 210, 0, Math.PI * 2); c.fill(); });
+        c.strokeStyle = '#b8352c'; c.lineWidth = 6; c.beginPath(); c.arc(cx, cy, 198, 0, Math.PI * 2); c.stroke();
+        const sg = c.createRadialGradient(cx - 30, cy - 30, 10, cx, cy, 185);
+        sg.addColorStop(0, '#e9b56c'); sg.addColorStop(1, '#b97a33');
+        c.fillStyle = sg; c.beginPath(); c.arc(cx, cy, 185, 0, Math.PI * 2); c.fill();
+        c.save(); c.beginPath(); c.arc(cx, cy, 185, 0, Math.PI * 2); c.clip();
+        c.strokeStyle = '#f4d98f'; c.lineWidth = 5;
+        for (let i = 0; i < 46; i++) { const y = cy - 40 + rng() * 170; c.beginPath(); c.moveTo(cx - 170, y); c.bezierCurveTo(cx - 60, y - 30 + rng() * 60, cx + 40, y - 30 + rng() * 60, cx + 170, y + (rng() - 0.5) * 30); c.stroke(); }
+        for (let i = 0; i < 40; i++) { c.fillStyle = 'rgba(255,240,200,0.45)'; c.beginPath(); c.arc(cx + (rng() - 0.5) * 300, cy + (rng() - 0.5) * 300, 2 + rng() * 6, 0, Math.PI * 2); c.fill(); }
+        c.restore();
+        [[cx - 70, cy - 80], [cx + 10, cy - 100]].forEach(([x, y]) => {
+          shadowed(c, 6, 3, 0.3, () => { c.fillStyle = '#c98b6d'; c.beginPath(); c.arc(x, y, 50, 0, Math.PI * 2); c.fill(); });
+          c.strokeStyle = 'rgba(255,230,210,0.6)'; c.lineWidth = 3; c.beginPath(); c.arc(x, y, 30, 0.5, 3.5); c.stroke();
+          c.strokeStyle = '#7a4430'; c.lineWidth = 5; c.beginPath(); c.arc(x, y, 48, 0, Math.PI * 2); c.stroke();
+        });
+        c.fillStyle = '#fbf7ee'; c.beginPath(); c.ellipse(cx + 95, cy - 20, 42, 32, 0.3, 0, Math.PI * 2); c.fill();
+        c.fillStyle = '#f2a533'; c.beginPath(); c.ellipse(cx + 95, cy - 20, 20, 16, 0.3, 0, Math.PI * 2); c.fill();
+        c.fillStyle = '#1d2a1f'; c.fillRect(cx + 100, cy + 40, 70, 110);
+        for (let i = 0; i < 40; i++) { c.fillStyle = '#7fbf5a'; c.beginPath(); c.arc(cx - 60 + rng() * 80, cy + 30 + rng() * 60, 4, 0, Math.PI * 2); c.fill(); }
+        c.save(); c.translate(S * 0.84, S * 0.62); c.rotate(-0.5);
+        shadowed(c, 8, 4, 0.4, () => { c.fillStyle = '#d9b483'; c.fillRect(-6, -200, 10, 380); c.fillRect(14, -200, 10, 380); });
+        c.restore();
+      },
+
+      sky2(c, rng) {
+        sky(c, '#2f7fd0', '#cfe4f5', S);
+        for (let i = 0; i < 7; i++) cloud(c, rng, rng() * S, S * (0.3 + rng() * 0.6), 220 + rng() * 160, 0.55);
+        c.strokeStyle = 'rgba(20,25,35,0.7)'; c.lineWidth = 1.5;
+        c.beginPath(); c.moveTo(0, S * 0.88); c.quadraticCurveTo(S * 0.5, S * 0.95, S, S * 0.84); c.stroke();
+      },
+
+      books(c, rng) {
+        c.fillStyle = lin(c, 0, 0, S, S, [[0, '#e9e1d3'], [1, '#b9ab94']]); c.fillRect(0, 0, S, S);
+        glow(c, S * 0.85, S * 0.1, 360, [255, 245, 220], 0.7);
+        c.fillStyle = '#8a6a4c'; c.fillRect(0, S * 0.8, S, S * 0.2);
+        const cols = ['#2e4a6b', '#8e3b3b', '#d9c49a', '#3f6b4f', '#5b4a7a', '#c77d3a', '#e4e0d6'];
+        let y = S * 0.8;
+        for (let i = 0; i < 7; i++) {
+          const h = 26 + rng() * 24, w = 260 + rng() * 120, x = S * 0.5 - w / 2 + (rng() - 0.5) * 40;
+          y -= h;
+          shadowed(c, 6, 2, 0.25, () => { c.fillStyle = cols[i % cols.length]; c.fillRect(x, y, w, h); });
+          c.fillStyle = '#f3ead6'; c.fillRect(x + w - 8, y + 3, 6, h - 6);
+          c.fillStyle = 'rgba(255,255,255,0.35)'; c.fillRect(x + 20, y + h / 2 - 2, 60 + rng() * 60, 4);
+        }
+        shadowed(c, 10, 5, 0.3, () => { c.fillStyle = '#f6f6f4'; c.beginPath(); c.arc(S * 0.84, S * 0.74, 34, 0, Math.PI * 2); c.fill(); });
+        c.fillStyle = '#6b4226'; c.beginPath(); c.arc(S * 0.84, S * 0.74, 26, 0, Math.PI * 2); c.fill();
+      },
+
+      cake(c, rng) {
+        c.fillStyle = lin(c, 0, 0, 0, S, [[0, '#6b4a3a'], [1, '#3a2a22']]); c.fillRect(0, 0, S, S);
+        for (let i = 0; i < 30; i++) glow(c, rng() * S, rng() * S * 0.5, 20 + rng() * 40, [255, 210, 150], 0.25 + rng() * 0.3);
+        c.fillStyle = '#efe9df'; c.fillRect(0, S * 0.62, S, S * 0.38);
+        shadowed(c, 20, 10, 0.25, () => { c.fillStyle = '#ffffff'; c.beginPath(); c.ellipse(S * 0.5, S * 0.76, 210, 70, 0, 0, Math.PI * 2); c.fill(); });
+        const x0 = S * 0.28, x1 = S * 0.72, yb = S * 0.76, yt = S * 0.5;
+        c.fillStyle = '#fbf6ee'; c.beginPath(); c.moveTo(x0, yb); c.lineTo(x1, yb); c.lineTo(x1, yt); c.lineTo(x0, yt + 10); c.closePath(); c.fill();
+        c.fillStyle = '#e9cf98'; c.fillRect(x0, yt + 40, x1 - x0, 26); c.fillRect(x0, yt + 100, x1 - x0, 26);
+        for (let k = 0; k < 6; k++) { c.fillStyle = '#e0484f'; c.beginPath(); c.ellipse(x0 + 22 + k * 40, yt + 82, 14, 10, 0, 0, Math.PI * 2); c.fill(); c.fillStyle = '#fbe0d8'; c.beginPath(); c.ellipse(x0 + 22 + k * 40, yt + 82, 6, 4, 0, 0, Math.PI * 2); c.fill(); }
+        c.fillStyle = '#ffffff'; c.beginPath(); c.moveTo(x0, yt + 10); c.lineTo(x1, yt); c.lineTo(x1 - 30, yt - 30); c.lineTo(x0 + 20, yt - 20); c.closePath(); c.fill();
+        c.fillStyle = '#d8323f'; c.beginPath(); c.moveTo(S * 0.5, yt - 70); c.bezierCurveTo(S * 0.5 + 40, yt - 70, S * 0.5 + 30, yt - 10, S * 0.5, yt - 8); c.bezierCurveTo(S * 0.5 - 30, yt - 10, S * 0.5 - 40, yt - 70, S * 0.5, yt - 70); c.fill();
+        c.fillStyle = '#3f8a3a'; c.beginPath(); c.ellipse(S * 0.5, yt - 72, 18, 6, 0, 0, Math.PI * 2); c.fill();
+        c.fillStyle = 'rgba(255,255,255,0.5)'; c.beginPath(); c.ellipse(S * 0.5 - 12, yt - 50, 5, 10, 0.3, 0, Math.PI * 2); c.fill();
+        c.save(); c.translate(S * 0.82, S * 0.82); c.rotate(-0.4); c.fillStyle = '#c9c9cc'; c.fillRect(-4, -90, 8, 140); c.restore();
+      },
+
+      cat(c, rng) {
+        c.fillStyle = '#e8dcc8'; c.fillRect(0, 0, S, S);
+        for (let i = 0; i < 14; i++) { c.strokeStyle = `rgba(150,120,90,${0.12 + rng() * 0.1})`; c.lineWidth = 6 + rng() * 10; c.beginPath(); const y = rng() * S; c.moveTo(0, y); c.bezierCurveTo(S * 0.3, y + 40, S * 0.7, y - 40, S, y + 10); c.stroke(); }
+        glow(c, S * 0.2, S * 0.15, 380, [255, 245, 225], 0.5);
+        const cx = S * 0.5, cy = S * 0.56;
+        shadowed(c, 26, 10, 0.25, () => { c.fillStyle = '#e39a4f'; c.beginPath(); c.ellipse(cx, cy, 170, 115, -0.15, 0, Math.PI * 2); c.fill(); });
+        c.fillStyle = '#e39a4f'; c.beginPath(); c.arc(cx - 120, cy - 40, 72, 0, Math.PI * 2); c.fill();
+        c.beginPath(); c.moveTo(cx - 175, cy - 70); c.lineTo(cx - 160, cy - 140); c.lineTo(cx - 120, cy - 100); c.fill();
+        c.beginPath(); c.moveTo(cx - 105, cy - 105); c.lineTo(cx - 70, cy - 150); c.lineTo(cx - 60, cy - 85); c.fill();
+        c.fillStyle = '#f4b6a6'; c.beginPath(); c.moveTo(cx - 165, cy - 85); c.lineTo(cx - 158, cy - 125); c.lineTo(cx - 133, cy - 100); c.fill();
+        c.strokeStyle = '#b8682c'; c.lineWidth = 9; c.lineCap = 'round';
+        for (let k = 0; k < 6; k++) { c.beginPath(); c.arc(cx + 20 + k * 22, cy - 10, 90 - k * 6, 3.6, 4.4); c.stroke(); }
+        c.strokeStyle = '#e39a4f'; c.lineWidth = 34; c.beginPath(); c.moveTo(cx + 150, cy + 40); c.quadraticCurveTo(cx + 60, cy + 150, cx - 90, cy + 90); c.stroke();
+        c.strokeStyle = '#3b2a1e'; c.lineWidth = 3;
+        c.beginPath(); c.arc(cx - 145, cy - 40, 10, 0.2, Math.PI - 0.2); c.stroke();
+        c.beginPath(); c.arc(cx - 100, cy - 42, 10, 0.2, Math.PI - 0.2); c.stroke();
+        c.fillStyle = '#c96f6a'; c.beginPath(); c.arc(cx - 122, cy - 20, 5, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = 'rgba(255,255,255,0.8)'; c.lineWidth = 1.5;
+        for (let k = -1; k <= 1; k++) { c.beginPath(); c.moveTo(cx - 140, cy - 15 + k * 6); c.lineTo(cx - 195, cy - 20 + k * 12); c.moveTo(cx - 104, cy - 15 + k * 6); c.lineTo(cx - 50, cy - 20 + k * 12); c.stroke(); }
+      }
+    };
+
+    /* ---------- 写真っぽい仕上げ ---------- */
+    function finish(c, rng, o) {
+      const tone = o.tone || 'warm';
+      const tints = { warm: 'rgba(255,190,120,0.10)', cool: 'rgba(120,160,220,0.10)', fade: 'rgba(230,220,200,0.12)', none: 'rgba(0,0,0,0)' };
+      c.save();
+      c.globalCompositeOperation = 'soft-light';
+      c.fillStyle = tints[tone] || tints.warm; c.fillRect(0, 0, S, S);
+      c.globalCompositeOperation = 'screen';
+      c.fillStyle = 'rgba(28,24,30,0.35)'; c.fillRect(0, 0, S, S);
+      c.restore();
+      const v = c.createRadialGradient(S / 2, S / 2, S * 0.3, S / 2, S / 2, S * 0.75);
+      v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.38)');
+      c.fillStyle = v; c.fillRect(0, 0, S, S);
+      try {
+        const img = c.getImageData(0, 0, S, S);
+        const d = img.data, g = o.grain || 18;
+        for (let i = 0; i < d.length; i += 4) { const n = (rng() - 0.5) * g; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+        c.putImageData(img, 0, 0);
+      } catch (e) { /* 粒子なしで続ける */ }
+    }
+
+    function url(scene, seed, opts) {
+      const o = opts || {};
+      const key = scene + '|' + seed + '|' + JSON.stringify(o);
+      if (cache[key]) return cache[key];
+      const draw = scenes[scene];
+      if (!draw) return '';
+      try {
+        const cv = document.createElement('canvas');
+        cv.width = S; cv.height = S;
+        const c = cv.getContext('2d');
+        if (!c) return '';
+        const rng = rngOf(key);
+        draw(c, rng, o);
+        finish(c, rng, o);
+        cache[key] = cv.toDataURL('image/jpeg', 0.84);
+      } catch (e) {
+        cache[key] = '';
+      }
+      return cache[key];
+    }
+    return { url, has: (name) => !!scenes[name] };
+  })();
+
+  // 投稿の画像：photo（自分で用意した画像）→ scene（描いた写真）→ なし
+  function postImage(post, seed) {
+    if (post?.photo) return String(post.photo);
+    if (post?.scene) return SceneArt.url(post.scene, seed, post.sceneOpt);
+    return '';
+  }
+  function avatarImage(p) {
+    if (p?.avatarPhoto) return String(p.avatarPhoto);
+    if (p?.avatarScene) return SceneArt.url(p.avatarScene, 'avatar-' + (p.user || ''), p.avatarOpt);
+    return '';
+  }
+
+  function vLumi(p) {
+    const posts = arr(p.posts);
+    const seedOf = (x, i) => `${p.user || ''}-${x?.date || i}`;
+    const av = avatarImage(p);
+    const avatarInner = av
+      ? `<img src="${esc(av)}" alt="" class="w-full h-full object-cover rounded-full" draggable="false">`
+      : `<span class="w-full h-full rounded-full grid place-items-center" style="background:${esc(p.color)}"><i class="fa-solid ${esc(p.icon)}"></i></span>`;
+    const tile = (x, i) => {
+      const src = postImage(x, seedOf(x, i));
+      return src
+        ? `<img src="${esc(src)}" alt="" class="absolute inset-0 w-full h-full object-cover" draggable="false" data-lumi="${i}">`
+        : `<span class="absolute inset-0 grid place-items-center text-3xl" style="background:${esc(x?.bg || '#ddd')}" data-lumi="${i}"><i class="fa-solid ${esc(x?.icon || 'fa-image')} opacity-80" data-lumi="${i}"></i></span>`;
+    };
+    const sel = B.lumiSel !== null ? posts[B.lumiSel] : null;
+    const detail = sel ? `
+      <div class="fixed inset-0 z-[65] bg-black/70 flex items-center justify-center p-3" data-lumi-close="1">
+        <div class="bg-white w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-md flex flex-col md:flex-row" data-lumi-stop="1">
+          <div class="md:w-[58%] relative aspect-square bg-black">${tile(sel, B.lumiSel)}</div>
+          <div class="md:w-[42%] flex flex-col min-w-0">
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-[#efefef]">
+              <span class="w-8 h-8 rounded-full overflow-hidden text-white text-xs">${avatarInner}</span>
+              <b class="text-sm">${esc(p.user)}</b>
+              <span class="text-sm text-[#0095f6] font-bold">・フォロー</span>
+              <button type="button" class="b-label ml-auto" data-lumi-close="1" aria-label="投稿を閉じる"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg><span data-lumi-close="1">閉じる</span></button>
+            </div>
+            <div class="px-4 py-3 text-sm leading-6 flex-1 min-w-0 break-words">
+              <div class="flex gap-3"><span class="w-8 h-8 shrink-0 rounded-full overflow-hidden text-white text-xs">${avatarInner}</span><p><b>${esc(p.user)}</b> ${fmtSNS(sel.caption)}</p></div>
+              ${arr(sel.comments).map((c) => `<div class="flex gap-3 mt-4"><span class="w-8 h-8 shrink-0 rounded-full bg-[#efefef] grid place-items-center text-[#8e8e8e] text-xs"><i class="fa-solid fa-user"></i></span><p><b>${esc(c?.u)}</b> ${fmtSNS(c?.t)}</p></div>`).join('')}
+              ${sel.note ? `<p class="mt-4 text-xs text-[#737373]">${esc(sel.note)}</p>` : ''}
+            </div>
+            <div class="px-4 py-3 border-t border-[#efefef] text-sm">
+              <div class="flex gap-4 text-xl"><i class="fa-regular fa-heart"></i><i class="fa-regular fa-comment"></i><i class="fa-regular fa-paper-plane"></i><i class="fa-regular fa-bookmark ml-auto"></i></div>
+              <p class="mt-2 font-bold">「いいね！」${numfmt(sel.likes)}件</p>
+              <p class="text-[11px] text-[#737373] mt-0.5">${esc(sel.date)}</p>
+            </div>
+          </div>
+        </div>
+      </div>` : '';
+    const hl = arr(p.highlights).map((h) => {
+      const src = h?.scene ? SceneArt.url(h.scene, 'hl-' + (p.user || '') + h.label) : '';
+      return `<div class="w-16 sm:w-20 text-center shrink-0">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full p-[3px] border border-[#dbdbdb]"><div class="w-full h-full rounded-full overflow-hidden bg-[#efefef]">${src ? `<img src="${esc(src)}" alt="" class="w-full h-full object-cover" draggable="false">` : ''}</div></div>
+        <p class="mt-1 text-xs truncate">${esc(h?.label)}</p>
+      </div>`;
+    }).join('');
+    return `<div class="bg-white min-h-full text-[#262626]">
+      <div class="border-b border-[#dbdbdb] px-4 py-3 flex items-center"><span class="font-black text-xl italic" style="font-family:Georgia,serif"><i class="fa-solid fa-camera-retro mr-2 text-[#d6249f]"></i>Lumi</span><span class="ml-auto flex gap-5 text-lg"><i class="fa-regular fa-heart"></i><i class="fa-regular fa-paper-plane"></i></span></div>
+      <div class="max-w-[935px] mx-auto px-4 py-6">
+        <div class="flex items-center gap-6 sm:gap-16 sm:px-10">
+          <div class="p-[3px] rounded-full shrink-0" style="background:linear-gradient(45deg,#fdf497,#fd5949,#d6249f,#285aeb)"><div class="w-20 h-20 sm:w-36 sm:h-36 rounded-full border-4 border-white overflow-hidden text-white text-3xl">${avatarInner}</div></div>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2"><p class="text-xl mr-2">${esc(p.user)}</p><span class="px-4 py-1 rounded-lg bg-[#0095f6] text-white text-sm font-bold">フォロー</span><span class="px-4 py-1 rounded-lg bg-[#efefef] text-sm font-bold">メッセージ</span><i class="fa-solid fa-ellipsis ml-1"></i></div>
+            <p class="mt-4 text-sm flex flex-wrap gap-x-6 gap-y-1"><span>投稿<b class="ml-1">${posts.length}</b>件</span><span>フォロワー<b class="ml-1">${numfmt(p.followers)}</b>人</span><span>フォロー中<b class="ml-1">${numfmt(p.following)}</b>人</span></p>
+            <p class="mt-3 text-sm font-bold">${esc(p.name)}</p>
+            <p class="text-sm whitespace-pre-line">${mk(esc(p.bio))}</p>
+          </div>
+        </div>
+        ${hl ? `<div class="mt-8 flex gap-5 sm:gap-10 sm:px-10 overflow-x-auto no-scrollbar">${hl}</div>` : ''}
+        <div class="mt-8 border-t border-[#dbdbdb] flex justify-center gap-12 text-xs tracking-widest">
+          <span class="border-t border-[#262626] -mt-px pt-3 font-bold"><i class="fa-solid fa-table-cells mr-1"></i>投稿</span>
+          <span class="pt-3 text-[#8e8e8e]"><i class="fa-solid fa-film mr-1"></i>リール</span>
+          <span class="pt-3 text-[#8e8e8e]"><i class="fa-regular fa-id-badge mr-1"></i>タグ付け</span>
+        </div>
+        <div class="grid grid-cols-3 gap-1 mt-3">
+          ${posts.map((x, i) => `<button type="button" class="relative aspect-square overflow-hidden bg-[#efefef] group" data-lumi="${i}" aria-label="投稿を開く">
+            ${tile(x, i)}
+            <span class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition grid place-items-center text-sm font-bold text-white" data-lumi="${i}"><span data-lumi="${i}"><i class="fa-solid fa-heart mr-1" data-lumi="${i}"></i>${numfmt(x?.likes)}　<i class="fa-solid fa-comment mr-1" data-lumi="${i}"></i>${arr(x?.comments).length}</span></span>
+          </button>`).join('')}
+        </div>
+      </div>
+      ${detail}
+    </div>`;
+  }
+
+  function vTsunagu(p) {
+    return `<div class="bg-[#f0f2f5] min-h-full">
+      <div class="bg-white shadow-sm px-4 py-2 flex items-center gap-2"><span class="w-9 h-9 rounded-full bg-[#2d6cdf] text-white grid place-items-center font-black">t</span><span class="font-black text-[#2d6cdf] text-lg">tsunagu</span></div>
+      <div class="bg-white">
+        <div class="max-w-4xl mx-auto">
+          <div class="h-36 sm:h-56 rounded-b-lg" style="background:linear-gradient(120deg,#cbd5e1,#94a3b8)"></div>
+          <div class="px-4 pb-4 flex flex-col sm:flex-row sm:items-end gap-3 -mt-12 sm:-mt-10">
+            <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-white bg-[#e4e6eb] grid place-items-center text-5xl text-[#8a8d91]"><i class="fa-solid ${esc(p.icon)}"></i></div>
+            <div class="sm:pb-3"><p class="text-2xl sm:text-3xl font-black text-[#050505]">${esc(p.name)}</p><p class="text-sm text-[#65676b]">友達 ${numfmt(p.friends)}人</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="max-w-4xl mx-auto px-3 py-4 grid gap-4 md:grid-cols-[320px_1fr]">
+        <div class="bg-white rounded-lg shadow-sm p-4 h-fit">
+          <p class="font-black text-lg text-[#050505]">自己紹介</p>
+          <ul class="mt-3 space-y-3 text-[15px] text-[#050505]">${arr(p.info).map((i) => `<li class="flex gap-3"><i class="fa-solid ${esc(i?.icon)} text-[#8a8d91] mt-1 w-4"></i><span>${mk(esc(i?.text))}</span></li>`).join('')}</ul>
+        </div>
+        <div class="space-y-4">
+          ${arr(p.posts).map((x) => `
+            <div class="bg-white rounded-lg shadow-sm">
+              <div class="p-4 flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-[#e4e6eb] grid place-items-center text-[#8a8d91]"><i class="fa-solid ${esc(p.icon)}"></i></div>
+                <div><p class="font-bold text-[15px] text-[#050505]">${esc(p.name)}</p><p class="text-xs text-[#65676b]">${esc(x?.date)} · <i class="fa-solid fa-earth-asia"></i></p></div>
+              </div>
+              <p class="px-4 pb-3 text-[15px] leading-6 text-[#050505]">${fmtSNS(x?.text)}</p>
+              <div class="px-4 py-2 text-sm text-[#65676b] border-t border-[#ced0d4] flex justify-between"><span><i class="fa-solid fa-thumbs-up text-[#2d6cdf] mr-1"></i>${numfmt(x?.likes)}</span><span>コメント${arr(x?.comments).length}件</span></div>
+              ${arr(x?.comments).length ? `<div class="px-4 pb-4 pt-1 space-y-2 border-t border-[#ced0d4]">${arr(x.comments).map((c) => `
+                <div class="flex gap-2 pt-2"><div class="w-8 h-8 shrink-0 rounded-full bg-[#e4e6eb] grid place-items-center text-[#8a8d91] text-xs"><i class="fa-solid fa-user"></i></div>
+                <div class="bg-[#f0f2f5] rounded-2xl px-3 py-2"><p class="text-[13px] font-bold text-[#050505]">${esc(c?.name)}</p><p class="text-[15px] text-[#050505]">${mk(esc(c?.text))}</p></div></div>`).join('')}</div>` : ''}
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function vSite(p, notice) {
+    const head = `
+      <div class="border-b-4" style="border-color:${esc(p.theme)}">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+          <span class="w-11 h-11 rounded-full grid place-items-center text-white text-lg shrink-0" style="background:${esc(p.theme)}"><i class="fa-solid ${esc(p.icon)}"></i></span>
+          <div class="min-w-0"><p class="font-black text-lg sm:text-xl text-[#222] leading-tight">${esc(p.name)}</p><p class="text-[11px] text-[#777] tracking-wider">${esc(p.sub)}</p></div>
+        </div>
+        <nav class="text-white text-sm" style="background:${esc(p.theme)}"><div class="max-w-5xl mx-auto px-2 flex overflow-x-auto no-scrollbar">${arr(p.nav).map((n) => `<span class="shrink-0 px-4 py-2.5 ${n === 'お知らせ' && notice ? 'bg-black/20' : ''} cursor-default">${esc(n)}</span>`).join('')}</div></nav>
+      </div>`;
+    const list = arr(p.notices).map((n) => `
+      <li class="py-3 border-b border-[#e5e5e5] flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+        <span class="text-xs text-[#666] shrink-0 w-24">${esc(n?.date)}</span>
+        <span class="text-[11px] px-2 py-0.5 rounded shrink-0 w-fit" style="background:${esc(p.accent)};color:${esc(p.theme)}">${esc(n?.cat)}</span>
+        <a class="navlink text-sm" data-nav="notice:${esc(Object.keys(pages).find((k) => pages[k] === p))}:${esc(n?.id)}">${esc(n?.title)}</a>
+      </li>`).join('');
+    const siteId = Object.keys(pages).find((k) => pages[k] === p);
+    const body = notice ? `
+      <div class="max-w-3xl mx-auto px-4 py-6">
+        <p class="text-xs text-[#666]"><a class="navlink" data-nav="page:${esc(siteId)}">ホーム</a> ＞ お知らせ ＞ ${esc(notice.date)}</p>
+        <div class="mt-4 border-l-4 pl-3" style="border-color:${esc(p.theme)}">
+          <span class="text-[11px] px-2 py-0.5 rounded" style="background:${esc(p.accent)};color:${esc(p.theme)}">${esc(notice.cat)}</span>
+          <h2 class="mt-2 text-lg sm:text-xl font-bold text-[#222] leading-snug">${esc(notice.title)}</h2>
+          <p class="mt-1 text-xs text-[#666]">掲載日：${esc(notice.date)}</p>
+        </div>
+        <div class="mt-6 text-[15px] leading-8 text-[#333]">${mk(br(esc(notice.body)))}</div>
+        <div class="mt-10 pt-4 border-t border-[#e5e5e5]"><a class="navlink text-sm" data-nav="page:${esc(siteId)}"><i class="fa-solid fa-angle-left mr-1"></i>お知らせ一覧へ戻る</a></div>
+      </div>` : `
+      <div class="text-white" style="background:linear-gradient(120deg, ${esc(p.theme)}, #111)"><div class="max-w-5xl mx-auto px-4 py-12 sm:py-16"><p class="text-2xl sm:text-4xl font-black">${esc(p.catch)}</p><p class="mt-3 text-sm text-white/80 max-w-xl leading-7">${esc(p.intro)}</p></div></div>
+      <div class="max-w-5xl mx-auto px-4 py-8">
+        <h2 class="text-lg font-bold text-[#222] flex items-center gap-2"><span class="w-1.5 h-5 rounded" style="background:${esc(p.theme)}"></span>お知らせ</h2>
+        <ul class="mt-3">${list}</ul>
+      </div>`;
+    return `<div class="bg-white min-h-full">${head}${body}
+      <footer class="mt-8 text-xs text-white/80 px-4 py-6 text-center" style="background:${esc(p.theme)}">© ${esc(p.name)}</footer></div>`;
+  }
+
+  function vBoard(p) {
+    return `<div class="bbs bg-[#efefef] min-h-full text-[#000]">
+      <div class="bg-[#cceecc] border-b border-[#9c9] px-3 py-1.5 text-xs">${esc(p.boardName)}</div>
+      <div class="max-w-4xl mx-auto px-3 sm:px-5 py-4">
+        <h2 class="text-[#c00] text-lg sm:text-xl font-bold">${esc(p.threadTitle)}</h2>
+        <p class="text-xs text-[#555] mt-1">※ 一部のレスのみ表示しています</p>
+        <dl class="mt-4 space-y-4">
+          ${arr(p.replies).map((r) => `
+            <div class="${r?.mark === 'confess' ? 'bg-[#fff3f3] border-l-4 border-[#d66] pl-2' : r?.mark === 'key' ? 'bg-[#f3f8ff] border-l-4 border-[#6a9ad6] pl-2' : ''} py-1">
+              <dt class="text-[13px] break-all"><b>${esc(r?.no)}</b> ：<span class="text-[#008000] font-bold">${esc(r?.name)}</span>：${esc(r?.date)} ID:${esc(r?.id)}</dt>
+              <dd class="mt-1 ml-4 sm:ml-8 text-[15px] leading-7">${fmtBBS(r?.text)}</dd>
+            </div>`).join('')}
+        </dl>
+        <div class="mt-6 border-t border-[#ccc] pt-3 text-xs text-[#555]">このスレッドは過去ログ倉庫に格納されています</div>
+      </div>
+    </div>`;
+  }
+
+  /* =====================================================================
+   *  LETTER MODAL
+   * ===================================================================== */
+  function openModal(id) {
+    const l = getListener(id);
+    if (!l || !isSolved(l) || !isOpenId(l.id)) return;
+    state.currentListener = l.id;
+    $('#modal-to').innerHTML = `宛先：RN <b>${esc(l.radioName)}</b> さん ─「${esc(l.title)}」`;
+    const name = $('#f-name');
+    if (name && !name.value) name.value = String(store.get(K_NAME, '') || '');
+    $('#f-them').value = '';
+    $('#f-self').value = '';
+    $('#form-error').classList.add('hidden');
+    const m = $('#modal');
+    m.classList.remove('closed');
+    m.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => (name?.value ? $('#f-them') : name)?.focus(), 60);
+  }
+  function closeModal() {
+    const m = $('#modal');
+    m.classList.add('closed');
+    m.setAttribute('aria-hidden', 'true');
+    if ($('#browser').classList.contains('closed')) document.body.style.overflow = '';
+    state.currentListener = null;
+  }
+  function submitLetter(e) {
+    e.preventDefault();
+    const l = getListener(state.currentListener);
+    if (!l) return closeModal();
+    const radioName = $('#f-name').value.trim();
+    const toThem = $('#f-them').value.trim();
+    const toSelf = $('#f-self').value.trim();
+    const err = $('#form-error');
+    const fail = (m) => { err.textContent = m; err.classList.remove('hidden'); };
+    if (!radioName) return fail('ラジオネームを入力してください。');
+    if (!toThem) return fail('相談者へ届ける言葉を書いてください。');
+    if (!toSelf) return fail('いちばん大切な「自分自身へ贈る言葉」を書いてください。');
+    const before = statuses();
+    state.cards.push({ id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), listenerId: l.id, radioName, toThem, toSelf, createdAt: Date.now(), tone: state.cards.length });
+    const ok = store.set(K_CARDS, state.cards);
+    store.set(K_NAME, radioName);
+    closeModal();
+    renderAll();
+    toast('返事を送りました', ok ? '「マイ言葉帳」にあなたの言葉が残りました' : 'この端末では保存できないため、ページを閉じると消えてしまいます', 'ok');
+    const after = statuses();
+    const opened = listeners.find((x) => before[x.id] === 'locked' && after[x.id] !== 'locked');
+    if (opened) {
+      setTimeout(() => {
+        toast('新しいお便りが届きました', `RN ${opened.radioName}さんより「${opened.title}」`, 'solved');
+        if (state.view === 'letters') setTimeout(() => $('#letter-' + opened.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+      }, 900);
+    } else if (listeners.every((x) => after[x.id] === 'done') && listeners.some((x) => before[x.id] !== 'done')) {
+      setTimeout(() => toast('今週のお便りは、これで全部です', '七通すべてに、あなたの返事が届きました', 'solved'), 900);
+    }
+  }
+
+  /* =====================================================================
+   *  EVENTS
+   * ===================================================================== */
+  function bind() {
+    document.addEventListener('click', (e) => {
+      const t = e.target;
+
+      // --- hints
+      const ht = t.closest('[data-hint-toggle]');
+      if (ht) {
+        const key = ht.getAttribute('data-hint-toggle');
+        if (key) {
+          state.hints[key] = (Number(state.hints[key]) || 0) > 0 ? 0 : 1;
+          store.set(K_HINTS, state.hints);
+          renderLetters();
+        }
+        return;
+      }
+      const hb = t.closest('[data-hint]');
+      if (hb) { setHint(hb.getAttribute('data-hint'), 1); return; }
+      const hk = t.closest('[data-hint-kw]');
+      if (hk) { setHint(hk.getAttribute('data-hint-kw'), 2); return; }
+      const hs = t.closest('[data-hint-search]');
+      if (hs) {
+        const q = hs.getAttribute('data-hint-search');
+        const panel = $('#b-hint-panel');
+        if (panel) { panel.hidden = true; $('#b-hint-btn')?.setAttribute('aria-expanded', 'false'); }
+        if (q) openBrowser({ kind: 'search', q });
+        return;
+      }
+      const hf = t.closest('[data-hint-from]');
+      if (hf) {
+        const r = parseRouteStr(hf.getAttribute('data-hint-from'));
+        const postAttr = hf.getAttribute('data-hint-post');
+        const panel = $('#b-hint-panel');
+        if (panel) { panel.hidden = true; $('#b-hint-btn')?.setAttribute('aria-expanded', 'false'); }
+        if (r) {
+          openBrowser(r);
+          const n = postAttr === '' || postAttr == null ? NaN : Number(postAttr);
+          if (!isNaN(n) && r.kind === 'page' && pages[r.id]?.type === 'lumi') { B.lumiSel = n; renderBrowser(); }
+        }
+        return;
+      }
+      if (t.closest('#b-hint-btn')) {
+        const panel = $('#b-hint-panel');
+        if (panel) {
+          panel.hidden = !panel.hidden;
+          $('#b-hint-btn').setAttribute('aria-expanded', panel.hidden ? 'false' : 'true');
+          if (!panel.hidden) renderHintPanel();
+        }
+        return;
+      }
+      if (t.closest('#b-hint-close')) { const panel = $('#b-hint-panel'); if (panel) panel.hidden = true; $('#b-hint-btn')?.setAttribute('aria-expanded', 'false'); return; }
+
+      // --- browser internal
+      if (t.closest('#b-view')) {
+        // 投稿の拡大表示：外側の暗い部分と×ボタンだけで閉じる（中のハッシュタグは検索できる）
+        const stop = t.closest('[data-lumi-stop]');
+        const lc = t.closest('[data-lumi-close]');
+        if (lc && (!stop || stop.contains(lc))) { B.lumiSel = null; renderBrowser(); return; }
+        if (stop && !t.closest('[data-search]')) return;
+        const lm = t.closest('[data-lumi]');
+        if (lm) { const i = Number(lm.getAttribute('data-lumi')); if (!isNaN(i)) { B.lumiSel = i; renderBrowser(); } return; }
+        if (t.closest('.sg-go')) { runSearchBox(t.closest('.sg-form')); return; }
+        const s = t.closest('[data-search]');
+        if (s) { e.preventDefault(); go({ kind: 'search', q: s.getAttribute('data-search') }); return; }
+        const n = t.closest('[data-nav]');
+        if (n) { e.preventDefault(); go(parseRoute(n.getAttribute('data-nav'))); return; }
+        return;
+      }
+
+      const vl = t.closest('[data-view-link]');
+      if (vl) {
+        e.preventDefault();
+        switchView(vl.dataset.viewLink);
+        const sc = vl.dataset.scroll;
+        if (sc) setTimeout(() => $('#letter-' + sc)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+        return;
+      }
+      if (t.closest('.open-browser')) { openBrowser(); return; }
+      const inv = t.closest('[data-investigate]');
+      if (inv) { openBrowser({ kind: 'search', q: inv.getAttribute('data-investigate') }); return; }
+      const or = t.closest('[data-open-route]');
+      if (or) { openBrowser(parseRoute(or.getAttribute('data-open-route'))); return; }
+      const rp = t.closest('[data-reply]');
+      if (rp) { openModal(rp.getAttribute('data-reply')); return; }
+      const dl = t.closest('[data-del]');
+      if (dl) {
+        const delId = dl.getAttribute('data-del');
+        askConfirm('この言葉を削除しますか？', '削除する', () => {
+          state.cards = state.cards.filter((c) => c?.id !== delId);
+          store.set(K_CARDS, state.cards);
+          renderAll();
+        });
+      }
+    });
+
+    // Enterキーで検索（フォーム送信を使わないので、プレビュー画面でも動く）
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229) return;
+      const t = e.target;
+      if (t.classList?.contains('sg-input')) { e.preventDefault(); runSearchBox(t.closest('.sg-form')); }
+      else if (t.id === 'b-address') { e.preventDefault(); goAddress(); }
+      else if (t.id === 'f-name') { e.preventDefault(); $('#f-them')?.focus(); }
+    });
+
+    function goAddress() {
+      const v = $('#b-address').value.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+      if (!v) return;
+      const pid = Object.keys(pages).find((k) => pages[k]?.url === v);
+      if (pid) return go({ kind: 'page', id: pid });
+      for (const k of Object.keys(pages)) {
+        const p = pages[k];
+        if (p?.type === 'site' && v.startsWith(p.url + '/news/')) {
+          const nid = v.slice((p.url + '/news/').length);
+          if (arr(p.notices).some((n) => n?.id === nid)) return go({ kind: 'notice', site: k, nid });
+        }
+      }
+      if (v === 'sagasu.example') return go({ kind: 'home' });
+      go({ kind: 'search', q: v });
+    }
+    $('#b-back').addEventListener('click', () => { if (!B.back.length) return; B.fwd.push(B.cur); B.cur = B.back.pop(); go(B.cur, { noPush: true }); });
+    $('#b-fwd').addEventListener('click', () => { if (!B.fwd.length) return; B.back.push(B.cur); B.cur = B.fwd.pop(); go(B.cur, { noPush: true }); });
+    $('#b-home').addEventListener('click', () => go({ kind: 'home' }));
+    $('#b-close').addEventListener('click', closeBrowser);
+
+    $('#letter-submit').addEventListener('click', submitLetter);
+    $('#modal-close').addEventListener('click', closeModal);
+    $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+    ['#f-name', '#f-them', '#f-self'].forEach((s) => $(s)?.addEventListener('input', () => $('#form-error').classList.add('hidden')));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (!$('#modal').classList.contains('closed')) closeModal();
+      else if (B.lumiSel !== null && !$('#browser').classList.contains('closed')) { B.lumiSel = null; renderBrowser(); }
+      else if (!$('#browser').classList.contains('closed')) closeBrowser();
+    });
+
+    $('#reset-btn').addEventListener('click', () => {
+      askConfirm('見つけた手がかりをすべて消して、白紙に戻しますか？', '白紙に戻す', () => {
+        state.found = new Set();
+        store.set(K_CLUES, []);
+        state.hints = {};
+        store.set(K_HINTS, {});
+        B.back = []; B.fwd = []; B.cur = null;
+        renderAll();
+        renderBrowser();
+        toast('調査ノートを白紙に戻しました', '', 'ok');
+      });
+    });
+  }
+
+  function askConfirm(message, okLabel, onOk) {
+    const wrap = document.createElement('div');
+    wrap.className = 'fixed inset-0 z-[95] bg-black/60 flex items-center justify-center p-4';
+    wrap.innerHTML = `
+      <div class="w-full max-w-sm rounded-xl bg-white p-5 shadow-2xl" role="alertdialog" aria-modal="true">
+        <p class="text-sm leading-7 text-[#24262b]">${esc(message)}</p>
+        <div class="mt-5 flex justify-end gap-2">
+          <button type="button" data-ans="no" class="px-4 py-2 rounded-full border border-[#c9c5bb] text-sm">やめる</button>
+          <button type="button" data-ans="yes" class="px-4 py-2 rounded-full bg-[#b3263a] text-white text-sm font-bold">${esc(okLabel)}</button>
+        </div>
+      </div>`;
+    const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey, true); };
+    const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
+    wrap.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-ans]');
+      if (b) { close(); if (b.getAttribute('data-ans') === 'yes') onOk(); }
+      else if (e.target === wrap) close();
+    });
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(wrap);
+    wrap.querySelector('[data-ans="no"]')?.focus();
+  }
+
+  function makeStars() {
+    const host = $('#stars');
+    if (!host) return;
+    let s = '';
+    for (let i = 0; i < 40; i++) {
+      s += `<span class="star" style="left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 100).toFixed(1)}%;animation-delay:${(Math.random() * 4).toFixed(1)}s"></span>`;
+    }
+    host.innerHTML = s;
+  }
+
+  /* ---- 不気味な演出 ---- */
+  function eerie() {
+    // 時計は、いつ見ても 25 時
+    const clock = $('#site-clock');
+    const tick = () => {
+      if (!clock) return;
+      const d = new Date();
+      clock.textContent = `25:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+    };
+    tick();
+    setInterval(tick, 1000);
+
+    // 番組表は、いつまでも読み込み終わらない
+    const sm = $('#schedule-msg');
+    const msgs = ['読み込み中…', '読み込みに時間がかかっています…', 'サーバーからの応答がありません', '読み込み中…'];
+    let i = 0;
+    setInterval(() => { if (sm) sm.textContent = msgs[(++i) % msgs.length]; }, 6000);
+
+    // タブを離れると、タイトルが変わる
+    const original = document.title;
+    document.addEventListener('visibilitychange', () => {
+      document.title = document.hidden ? 'まだ、聴いていますか？' : original;
+    });
+
+    // ときどき、画面が一瞬だけ乱れる
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const glitch = () => {
+      document.documentElement.classList.add('glitch');
+      setTimeout(() => document.documentElement.classList.remove('glitch'), 90 + Math.random() * 120);
+      setTimeout(glitch, 9000 + Math.random() * 14000);
+    };
+    setTimeout(glitch, 6000);
+  }
+
+  /* =====================================================================
+   *  BGM ── やさしいオルゴールのような曲（ブラウザの中で鳴らす）
+   * ===================================================================== */
+  const BGM = (() => {
+    const K_BGM = 'mnsd_bgm_v1';
+    const saved = store.get(K_BGM, {}) || {};
+    let ctx = null, master = null, musicBus = null, reverb = null, crackle = null;
+    let on = false, ducked = false, timer = null, nextTime = 0, step = 0;
+    let volume = 0.5;
+    const BPM = 74, EIGHTH = 60 / BPM / 2, STEPS_PER_CHORD = 8;
+    const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+    // C → G → Am → F （明るく、やさしい基本の和音だけ）
+    const chords = [
+      { bass: 48, notes: [60, 64, 67, 72], melody: [72, 74, 76, 79] },
+      { bass: 43, notes: [59, 62, 67, 71], melody: [71, 74, 79, 81] },
+      { bass: 45, notes: [57, 60, 64, 69], melody: [69, 72, 76, 81] },
+      { bass: 41, notes: [57, 60, 65, 69], melody: [69, 72, 74, 77] }
+    ];
+    let rand = Math.random;
+
+    function makeReverb() {
+      const len = Math.floor(ctx.sampleRate * 1.6);
+      const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+      }
+      const conv = ctx.createConvolver();
+      conv.buffer = buf;
+      return conv;
+    }
+    function makeCrackle() {
+      const len = ctx.sampleRate * 4;
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        d[i] = (Math.random() * 2 - 1) * 0.015;
+        if (Math.random() < 0.0004) d[i] = (Math.random() * 2 - 1) * 0.7;
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf; src.loop = true;
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1200;
+      const g = ctx.createGain(); g.gain.value = 0.18;
+      src.connect(hp); hp.connect(g); g.connect(master);
+      src.start();
+      return src;
+    }
+    function setup() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ctx = new AC();
+      master = ctx.createGain(); master.gain.value = 0;
+      const comp = ctx.createDynamicsCompressor();
+      master.connect(comp); comp.connect(ctx.destination);
+      musicBus = ctx.createGain(); musicBus.gain.value = 1;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3400;
+      musicBus.connect(lp); lp.connect(master);
+      reverb = makeReverb();
+      const wet = ctx.createGain(); wet.gain.value = 0.25;
+      reverb.connect(wet); wet.connect(master);
+      return true;
+    }
+    function voice(freq, t, dur, type, gainPeak, attack, toReverb, detune) {
+      const o = ctx.createOscillator();
+      o.type = type; o.frequency.value = freq; if (detune) o.detune.value = detune;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gainPeak, t + attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(musicBus);
+      if (toReverb) g.connect(reverb);
+      o.start(t); o.stop(t + dur + 0.05);
+    }
+    function scheduleStep(t) {
+      const ci = Math.floor(step / STEPS_PER_CHORD) % chords.length;
+      const pos = step % STEPS_PER_CHORD;
+      const ch = chords[ci];
+      if (pos === 0) {
+        ch.notes.forEach((n) => voice(mtof(n - 12), t, EIGHTH * STEPS_PER_CHORD + 0.6, 'sine', 0.016, 0.9, true));
+        voice(mtof(ch.bass - 12), t, EIGHTH * 4, 'sine', 0.07, 0.04, false);
+      }
+      if (pos === 4) voice(mtof(ch.bass - 12 + 7), t, EIGHTH * 3, 'sine', 0.05, 0.04, false);
+      // オルゴールのようなメロディ（和音に合う音だけを使う）
+      const play = pos % 2 === 0 ? rand() < 0.8 : rand() < 0.25;
+      if (play) {
+        const n = ch.melody[Math.floor(rand() * ch.melody.length)];
+        voice(mtof(n), t, 1.3, 'sine', 0.05, 0.005, true);
+        voice(mtof(n) * 2, t, 0.5, 'sine', 0.012, 0.004, true);
+      }
+      step++;
+    }
+    function tick() {
+      if (!ctx) return;
+      while (nextTime < ctx.currentTime + 0.6) { scheduleStep(nextTime); nextTime += EIGHTH; }
+    }
+    let hidden = false;
+    function targetGain() { return on && !ducked && !hidden ? volume * 0.9 : 0; }
+    function applyGain(sec) {
+      if (!master) return;
+      const now = ctx.currentTime;
+      master.gain.cancelScheduledValues(now);
+      master.gain.setValueAtTime(master.gain.value, now);
+      master.gain.linearRampToValueAtTime(targetGain(), now + (sec || 0.8));
+    }
+    function updateUI() {
+      const btn = $('#bgm-btn'); const label = $('#bgm-label'); const box = $('#bgm-box');
+      if (btn) btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (label) label.textContent = on ? (ducked ? 'BGM（放送中は無音）' : 'BGM オン') : 'BGM オフ';
+      if (box) box.classList.toggle('ducked', on && ducked);
+      const vol = $('#bgm-vol'); if (vol && document.activeElement !== vol) vol.value = String(Math.round(volume * 100));
+    }
+    function start() {
+      try {
+        if (!ctx && !setup()) { toast('BGMを再生できませんでした', 'このブラウザは音の再生に対応していません', 'ok'); return; }
+        if (ctx.state === 'suspended') ctx.resume();
+        on = true;
+        nextTime = Math.max(nextTime, ctx.currentTime + 0.1);
+        if (!timer) timer = setInterval(tick, 120);
+        tick();
+        applyGain(1.6);
+      } catch (e) { on = false; }
+      store.set(K_BGM, { volume, on });
+      updateUI();
+    }
+    function stop() {
+      on = false;
+      applyGain(0.8);
+      setTimeout(() => { if (!on && timer) { clearInterval(timer); timer = null; } }, 900);
+      store.set(K_BGM, { volume, on });
+      updateUI();
+    }
+    return {
+      start() { if (!on) start(); },
+      setHidden(v) {
+        hidden = !!v;
+        if (!ctx) return;
+        if (hidden) { applyGain(0.3); setTimeout(() => { if (hidden && ctx.state === 'running') ctx.suspend(); }, 400); }
+        else { if (ctx.state === 'suspended') ctx.resume(); nextTime = Math.max(nextTime, ctx.currentTime + 0.1); applyGain(1.2); }
+      },
+      toggle() { on ? stop() : start(); },
+      setVolume(v) { volume = Math.min(1, Math.max(0, v)); if (ctx) applyGain(0.2); store.set(K_BGM, { volume, on }); },
+      duck(v) { ducked = !!v; if (ctx) applyGain(v ? 1.2 : 2.0); updateUI(); },
+      wasOn: () => !!saved.on,
+      updateUI
+    };
+  })();
+
+  function init() {
+    makeStars();
+    eerie();
+    // BGM：画面にボタンは出さず、最初にクリック・タップ・キー操作をしたときに流し始める
+    const startBgmOnce = () => {
+      BGM.start();
+      ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.removeEventListener(ev, startBgmOnce, true));
+    };
+    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, startBgmOnce, true));
+    document.addEventListener('visibilitychange', () => BGM.setHidden(document.hidden));
+    renderOnAir();
+    drawMeter(0);
+    $('#play-btn')?.addEventListener('click', togglePlayer);
+    renderAll();
+    renderBrowser();
+    bind();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
