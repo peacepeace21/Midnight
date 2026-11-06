@@ -212,6 +212,10 @@
 
 <div class="max-w-6xl mx-auto px-4 py-8 grid gap-8 lg:grid-cols-[1fr_300px]">
   <main>
+    <div id="save-warning" hidden class="mb-6 rounded-xl border border-[#d9b25c] bg-[#fff7e3] px-4 py-3 text-xs leading-6 text-[#5b4a1c]">
+      <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>この画面では、受信記録が保存されません</p>
+      <p>ページを閉じると、見つけた手がかりや返事が消えてしまいます。番組ページを直接開くか、「番組について」の<button type="button" class="underline font-bold" data-view-link="about" data-scroll-carry="1">受信コード</button>で記録を引き継いでください。</p>
+    </div>
     <!-- TOP -->
     <section id="view-top" class="view active">
       <div class="rounded-xl bg-white border border-[var(--line)] p-5 sm:p-7">
@@ -280,6 +284,22 @@
         </dl>
       </div>
 
+      <div id="carry" class="mt-6 rounded-xl bg-white border border-[var(--line)] p-5 sm:p-7 text-sm text-[#4b5160]">
+        <h3 class="font-bold text-[var(--navy)]"><i class="fa-solid fa-key mr-1.5 text-[var(--gold)]"></i>受信記録の引き継ぎ</h3>
+        <p class="mt-2 text-xs leading-6">見つけた手がかり、届けた返事、マイ言葉帳は、このブラウザの中に記録されます。別の端末で続けるときや、記録が消えてしまったときは「受信コード」を使ってください。</p>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-[var(--navy)]">今の記録を受信コードにする</p>
+            <button type="button" id="code-make" class="mt-2 px-4 py-2 rounded-full bg-[var(--navy)] text-white text-xs font-bold">受信コードを表示してコピー</button>
+            <textarea id="code-out" rows="3" readonly class="field mt-2 w-full rounded-lg px-3 py-2 text-[11px] font-mono break-all" placeholder="ここに受信コードが表示されます" aria-label="受信コード"></textarea>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-[var(--navy)]">受信コードから続きを再開する</p>
+            <textarea id="code-in" rows="3" class="field mt-2 w-full rounded-lg px-3 py-2 text-[11px] font-mono break-all" placeholder="コピーしておいた受信コードを貼り付け" aria-label="受信コードの入力"></textarea>
+            <button type="button" id="code-load" class="mt-2 px-4 py-2 rounded-full border border-[var(--navy)] text-[var(--navy)] text-xs font-bold">この受信コードで再開する</button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -1046,15 +1066,35 @@
   const hasReplied = (l) => state.cards.some((c) => c?.listenerId === l?.id);
 
   // 1通ずつ：前のお便りの真相にたどり着き、返事を送ると、次のお便りの封が開く
+  // 1日1通：前のお便りに返事を送った日の翌日（0時を過ぎたら）、次のお便りが届く
+  const dayKey = (ms) => { const d = new Date(ms); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); };
+  const firstReplyAt = (l) => {
+    const t = state.cards.filter((c) => c?.listenerId === l?.id).map((c) => Number(c?.createdAt) || 0).filter((x) => x > 0);
+    return t.length ? Math.min(...t) : 0;
+  };
   function statuses() {
     const out = {};
     let prevDone = true;
-    listeners.forEach((l) => {
+    let prevReplyDay = null;
+    const today = dayKey(Date.now());
+    listeners.forEach((l, i) => {
       const done = isSolved(l) && hasReplied(l);
-      out[l.id] = !prevDone ? 'locked' : (done ? 'done' : 'open');
-      prevDone = prevDone && done;
+      let st;
+      if (!prevDone) st = 'locked';
+      else if (i > 0 && prevReplyDay !== null && today <= prevReplyDay) st = 'waiting';
+      else st = done ? 'done' : 'open';
+      out[l.id] = st;
+      prevDone = prevDone && done && st !== 'waiting';
+      prevReplyDay = done ? dayKey(firstReplyAt(l) || Date.now()) : null;
     });
     return out;
+  }
+  function untilMidnight() {
+    const now = new Date();
+    const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+    const min = Math.max(1, Math.ceil((next - now) / 60000));
+    const h = Math.floor(min / 60), m = min % 60;
+    return h > 0 ? `あと${h}時間${m}分` : `あと${m}分`;
   }
   const isOpenId = (id) => { const st = statuses()[id]; return st === 'open' || st === 'done'; };
   function routeOwner(r) {
@@ -1103,6 +1143,13 @@
     const st = statuses();
     wrap.innerHTML = listeners.map((l, i) => {
       const s = st[l.id];
+      if (s === 'waiting') {
+        return `<div class="rounded-xl border border-dashed border-[var(--gold)] bg-[#fbf6ea] p-4 text-[#8a7a52]">
+          <p class="text-[11px]">第${i + 1}通</p>
+          <p class="mt-1 font-bold leading-snug"><i class="fa-solid fa-envelope mr-1.5"></i>明日、届くお便り</p>
+          <p class="mt-3 text-[11px]"><i class="fa-regular fa-clock mr-1"></i>日付が変わると届きます（<span class="wait-left">${untilMidnight()}</span>）</p>
+        </div>`;
+      }
       if (s === 'locked') {
         return `<div class="rounded-xl border border-dashed border-[#c9c5bb] bg-[#efede7] p-4 text-[#9a978e]">
           <p class="text-[11px]">第${i + 1}通</p>
@@ -1128,6 +1175,18 @@
     if (!wrap) return;
     const st = statuses();
     wrap.innerHTML = listeners.map((l, idx) => {
+      if (st[l.id] === 'waiting') {
+        return `<article id="letter-${esc(l.id)}" class="rounded-xl border border-dashed border-[var(--gold)] bg-[#fbf6ea] px-5 sm:px-7 py-6 text-[#8a7a52]">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 shrink-0 rounded-lg bg-[#f3e8cc] grid place-items-center text-xl"><i class="fa-solid fa-envelope"></i></div>
+            <div class="min-w-0">
+              <p class="text-xs">第${idx + 1}通</p>
+              <p class="mincho font-bold text-[#5b4a1c] mt-0.5">次のお便りは、今夜、日付が変わるころに届きます。</p>
+              <p class="text-[11px] mt-1"><i class="fa-regular fa-clock mr-1"></i>届くまで <span class="wait-left">${untilMidnight()}</span>。今日のお便りへの返事は、ちゃんと届いています。</p>
+            </div>
+          </div>
+        </article>`;
+      }
       if (st[l.id] === 'locked') {
         return `<article id="letter-${esc(l.id)}" class="rounded-xl border border-dashed border-[#c9c5bb] bg-[#efede7] px-5 sm:px-7 py-6 text-[#8f8c84]">
           <div class="flex items-center gap-4">
@@ -1284,6 +1343,9 @@
     if (side) side.innerHTML = listeners.map((l, i) => {
       const c = arr(l.clues).length;
       const f = foundCount(l);
+      if (st[l.id] === 'waiting') {
+        return `<div class="text-[var(--gold)]"><div class="flex justify-between"><span>第${i + 1}通</span><span><i class="fa-regular fa-clock"></i> 明日届く</span></div><div class="mt-1 h-1.5 rounded-full bg-white/10"></div></div>`;
+      }
       if (st[l.id] === 'locked') {
         return `<div class="text-white/35"><div class="flex justify-between"><span>第${i + 1}通</span><span><i class="fa-solid fa-lock"></i> 未開封</span></div><div class="mt-1 h-1.5 rounded-full bg-white/10"></div></div>`;
       }
@@ -2508,8 +2570,11 @@
     renderAll();
     toast('返事を送りました', ok ? '「マイ言葉帳」にあなたの言葉が残りました' : 'この端末では保存できないため、ページを閉じると消えてしまいます', 'ok');
     const after = statuses();
-    const opened = listeners.find((x) => before[x.id] === 'locked' && after[x.id] !== 'locked');
-    if (opened) {
+    const waiting = listeners.find((x) => before[x.id] !== 'waiting' && after[x.id] === 'waiting');
+    const opened = listeners.find((x) => (before[x.id] === 'locked' || before[x.id] === 'waiting') && (after[x.id] === 'open' || after[x.id] === 'done'));
+    if (waiting) {
+      setTimeout(() => toast('次のお便りは、明日届きます', `日付が変わるころ、またここで待っています（${untilMidnight()}）`, 'solved'), 900);
+    } else if (opened) {
       setTimeout(() => {
         toast('新しいお便りが届きました', `RN ${opened.radioName}さんより「${opened.title}」`, 'solved');
         if (state.view === 'letters') setTimeout(() => $('#letter-' + opened.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
@@ -2594,6 +2659,7 @@
       if (vl) {
         e.preventDefault();
         switchView(vl.dataset.viewLink);
+        if (vl.dataset.scrollCarry) setTimeout(() => $('#carry')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
         const sc = vl.dataset.scroll;
         if (sc) setTimeout(() => $('#letter-' + sc)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
         return;
@@ -2870,13 +2936,57 @@
       store.set(K_BGM, { volume, on });
       updateUI();
     }
+    // iPhone はマナーモードだとこの方式の音が鳴らないので、無音の音声を一緒に流して「音楽の再生」として扱わせる
+    let unlockEl = null;
+    function silentWav() {
+      const rate = 8000, n = rate / 2;
+      const bytes = new Uint8Array(44 + n);
+      const dv = new DataView(bytes.buffer);
+      const str = (o, t) => { for (let i = 0; i < t.length; i++) bytes[o + i] = t.charCodeAt(i); };
+      str(0, 'RIFF'); dv.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, rate, true); dv.setUint32(28, rate, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true);
+      str(36, 'data'); dv.setUint32(40, n, true);
+      for (let i = 44; i < bytes.length; i++) bytes[i] = 128;
+      let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      return 'data:audio/wav;base64,' + btoa(bin);
+    }
+    function unlock() {
+      try {
+        if (!unlockEl) {
+          unlockEl = document.createElement('audio');
+          unlockEl.src = silentWav();
+          unlockEl.loop = true;
+          unlockEl.setAttribute('playsinline', '');
+          unlockEl.setAttribute('aria-hidden', 'true');
+        }
+        if (unlockEl.paused && !hidden) { const pr = unlockEl.play(); if (pr && pr.catch) pr.catch(() => {}); }
+      } catch (e) { /* 鳴らせない環境では何もしない */ }
+    }
     return {
+      // 画面を操作するたびに呼ばれる。止まっていれば流し直す
+      kick() {
+        try {
+          if (!on) start();
+          else if (ctx && ctx.state !== 'running' && !hidden) { const pr = ctx.resume(); if (pr && pr.catch) pr.catch(() => {}); nextTime = Math.max(nextTime, ctx.currentTime + 0.1); }
+          unlock();
+        } catch (e) { /* 何もしない */ }
+      },
+      running: () => !!ctx && ctx.state === 'running',
       start() { if (!on) start(); },
       setHidden(v) {
         hidden = !!v;
         if (!ctx) return;
-        if (hidden) { applyGain(0.3); setTimeout(() => { if (hidden && ctx.state === 'running') ctx.suspend(); }, 400); }
-        else { if (ctx.state === 'suspended') ctx.resume(); nextTime = Math.max(nextTime, ctx.currentTime + 0.1); applyGain(1.2); }
+        if (hidden) {
+          applyGain(0.3);
+          try { unlockEl && unlockEl.pause(); } catch (e) { /* noop */ }
+          setTimeout(() => { if (hidden && ctx.state === 'running') ctx.suspend(); }, 400);
+        } else {
+          if (ctx.state !== 'running') { const pr = ctx.resume(); if (pr && pr.catch) pr.catch(() => {}); }
+          nextTime = Math.max(nextTime, ctx.currentTime + 0.1);
+          applyGain(1.2);
+          unlock();
+        }
       },
       toggle() { on ? stop() : start(); },
       setVolume(v) { volume = Math.min(1, Math.max(0, v)); if (ctx) applyGain(0.2); store.set(K_BGM, { volume, on }); },
@@ -2886,18 +2996,93 @@
     };
   })();
 
+  /* ---- 受信コード：進み具合を文字列にして、別の場所でも続きから遊べるようにする ---- */
+  const CODE_HEAD = 'MNSD1-';
+  function toB64(str) { const b = new TextEncoder().encode(str); let bin = ''; b.forEach((x) => { bin += String.fromCharCode(x); }); return btoa(bin); }
+  function fromB64(b64) { const bin = atob(b64); const b = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return new TextDecoder().decode(b); }
+  function makeCode() {
+    const data = { v: 1, f: Array.from(state.found), c: state.cards, h: state.hints, n: String(store.get(K_NAME, '') || '') };
+    return CODE_HEAD + toB64(JSON.stringify(data)).replace(/=+$/, '');
+  }
+  function loadCode(text) {
+    const raw = String(text || '').replace(/\s+/g, '');
+    if (!raw.startsWith(CODE_HEAD)) throw new Error('head');
+    let b64 = raw.slice(CODE_HEAD.length);
+    while (b64.length % 4) b64 += '=';
+    const data = JSON.parse(fromB64(b64));
+    if (!data || data.v !== 1) throw new Error('ver');
+    state.found = new Set(arr(data.f).filter((k) => clueOwner[k]));
+    state.cards = arr(data.c).filter((c) => c && typeof c === 'object' && getListener(c.listenerId));
+    state.hints = data.h && typeof data.h === 'object' && !Array.isArray(data.h) ? data.h : {};
+    store.set(K_CLUES, Array.from(state.found));
+    store.set(K_CARDS, state.cards);
+    store.set(K_HINTS, state.hints);
+    if (data.n) store.set(K_NAME, String(data.n));
+  }
+  function storageWorks() {
+    try {
+      const k = 'mnsd_probe';
+      window.localStorage.setItem(k, '1');
+      const ok = window.localStorage.getItem(k) === '1';
+      window.localStorage.removeItem(k);
+      return ok;
+    } catch (e) { return false; }
+  }
+  function bindCarry() {
+    $('#code-make')?.addEventListener('click', () => {
+      const out = $('#code-out');
+      const code = makeCode();
+      if (out) { out.value = code; out.focus(); out.select(); }
+      const done = () => toast('受信コードをコピーしました', 'メモ帳などに貼り付けて、なくさないように保管してください', 'ok');
+      try {
+        const pr = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(code) : null;
+        if (pr && pr.then) pr.then(done).catch(() => toast('受信コードを表示しました', '表示されたコードを選んでコピーしてください', 'ok'));
+        else toast('受信コードを表示しました', '表示されたコードを選んでコピーしてください', 'ok');
+      } catch (e) { toast('受信コードを表示しました', '表示されたコードを選んでコピーしてください', 'ok'); }
+    });
+    $('#code-load')?.addEventListener('click', () => {
+      const v = $('#code-in')?.value || '';
+      if (!v.trim()) { toast('受信コードが入力されていません', 'コピーしておいたコードを貼り付けてください', 'ok'); return; }
+      try {
+        loadCode(v);
+        renderAll();
+        if (B.cur) renderBrowser();
+        $('#code-in').value = '';
+        toast('受信記録を読み込みました', '続きから再開できます', 'solved');
+      } catch (e) {
+        toast('この受信コードは読み込めませんでした', '最後まで正しくコピーされているか確かめてください', 'ok');
+      }
+    });
+  }
+  // 日付が変わったら、次のお便りを届ける（開きっぱなしでも）
+  let lastStatusJson = '';
+  function watchDay() {
+    const now = JSON.stringify(statuses());
+    if (lastStatusJson && now !== lastStatusJson) {
+      const prev = JSON.parse(lastStatusJson);
+      const cur = JSON.parse(now);
+      renderAll();
+      const arrived = listeners.find((x) => prev[x.id] === 'waiting' && cur[x.id] === 'open');
+      if (arrived) toast('新しいお便りが届きました', `RN ${arrived.radioName}さんより「${arrived.title}」`, 'solved');
+    } else {
+      $$('.wait-left').forEach((el) => { el.textContent = untilMidnight(); });
+    }
+    lastStatusJson = now;
+  }
+
   function init() {
     makeStars();
     eerie();
     // BGM：画面にボタンは出さず、最初にクリック・タップ・キー操作をしたときに流し始める
-    const startBgmOnce = () => {
-      BGM.start();
-      ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.removeEventListener(ev, startBgmOnce, true));
-    };
-    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, startBgmOnce, true));
+    const kickBgm = () => BGM.kick();
+    ['click', 'pointerup', 'touchend', 'keydown'].forEach((ev) => document.addEventListener(ev, kickBgm, true));
     document.addEventListener('visibilitychange', () => BGM.setHidden(document.hidden));
     renderOnAir();
     drawMeter(0);
+    bindCarry();
+    if (!storageWorks()) { const w = $('#save-warning'); if (w) w.hidden = false; }
+    lastStatusJson = JSON.stringify(statuses());
+    setInterval(watchDay, 30000);
     $('#play-btn')?.addEventListener('click', togglePlayer);
     renderAll();
     renderBrowser();
